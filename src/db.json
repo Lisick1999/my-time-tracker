@@ -1,0 +1,35 @@
+{
+	"users": [
+		{
+			"id": "001",
+			"login": "kek",
+			"password": "qwe123",
+			"name": "anton",
+			"createdAt": "1999-01-01",
+			"updatedAt": "2005-10-15"
+		}
+	],
+	"projects": [
+		{
+			"id": "001",
+			"userId": "001",
+			"name": "тест",
+			"description": "какое-то описание",
+			"color": "red",
+			"createdAt": "2004-03-08",
+			"updatedAt": "2010-08-24"
+		}
+	],
+	"timeEntries": [
+		{
+			"id": "001",
+			"userId": "001",
+			"projectId": "тест",
+			"startTime": "2004-03-08",
+			"endTime": "2010-08-24",
+			"duration": "8000",
+			"createdAt": "2010-08-24",
+			"updatedAt": "2020-05-14"
+		}
+	]
+}
