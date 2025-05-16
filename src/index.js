@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+// для роутинга подключить провайдер
+import { BrowserRouter } from 'react-router-dom';
+import { Tracker } from './tracker';
 import './index.css';
-import { App } from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>,
+	<BrowserRouter>
+		<Tracker />
+	</BrowserRouter>,
 );
