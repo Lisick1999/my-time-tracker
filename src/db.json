@@ -1,35 +1,48 @@
 {
-	"users": [
-		{
-			"id": "001",
-			"login": "kekek@kek.kek",
-			"password": "qwe123",
-			"userName": "anton",
-			"created_at": "1999-01-01",
-			"updated_at": "2005-10-15"
-		}
-	],
-	"projects": [
-		{
-			"id": "001",
-			"userId": "001",
-			"name": "тест",
-			"description": "какое-то описание",
-			"color": "red",
-			"created_at": "2004-03-08",
-			"updated_at": "2010-08-24"
-		}
-	],
-	"timeEntries": [
-		{
-			"id": "001",
-			"userId": "001",
-			"projectId": "тест",
-			"startTime": "2004-03-08",
-			"endTime": "2010-08-24",
-			"duration": "8000",
-			"created_at": "2010-08-24",
-			"updated_at": "2020-05-14"
-		}
-	]
+  "users": [
+    {
+      "id": "506a",
+      "email": "qweqweqwe@qwe.qwe",
+      "password": "QWEqwe123)",
+      "userName": "qwe",
+      "createdAt": "19/05/2025"
+    },
+    {
+      "id": "b2e9",
+      "email": "asdasdasd@asd.asd",
+      "password": "ASDasd123)",
+      "userName": "asd",
+      "createdAt": "19/05/2025"
+    },
+    {
+      "id": "c983",
+      "email": "zxczxczxc@zxc.zxc",
+      "password": "ZXCzxc123)",
+      "userName": "zxc",
+      "createdAt": "19/05/2025"
+    }
+  ],
+  "projects": [
+    {
+      "id": "001",
+      "userId": "001",
+      "name": "тест",
+      "description": "какое-то описание",
+      "color": "red",
+      "created_at": "2004-03-08",
+      "updated_at": "2010-08-24"
+    }
+  ],
+  "timeEntries": [
+    {
+      "id": "001",
+      "userId": "001",
+      "projectId": "тест",
+      "startTime": "2004-03-08",
+      "endTime": "2010-08-24",
+      "duration": "8000",
+      "created_at": "2010-08-24",
+      "updated_at": "2020-05-14"
+    }
+  ]
 }

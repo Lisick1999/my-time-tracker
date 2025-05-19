@@ -1,7 +1,9 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectAuth, selectUserName } from '../../../../selectors';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAuth, selectUserName, selectUserSession } from '../../../../selectors';
+import { Icon } from '../../../icon/icon';
+import { logout } from '../../../../actions';
 
 const NavLink = styled(Link)`
 	margin-right: 20px;
@@ -31,11 +33,10 @@ const UserIcon = () => (
 
 const ControlPanelContainer = ({ className }) => {
 	const userName = useSelector(selectUserName);
-	console.log(
-		'Redux state:',
-		useSelector((state) => state),
-	);
-	console.log('User name:', userName);
+	const session = useSelector(selectUserSession);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
 	return (
 		<nav className={className}>
 			<NavLink className="header-nav" to="/home">
@@ -51,8 +52,15 @@ const ControlPanelContainer = ({ className }) => {
 			{userName || 'Нет имени'}
 			<NavLink className="header-nav" to="/settings">
 				<UserIcon />
-				{/* {auth ? <></> : <div>Что-то пошло не по плану...</div>} */}
 			</NavLink>
+			<Icon
+				id="fa-sign-out"
+				size="35px"
+				onClick={() => {
+					dispatch(logout(session));
+					navigate('/');
+				}}
+			/>
 		</nav>
 	);
 };

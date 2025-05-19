@@ -1,9 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
 import { Header } from './components';
-import { Authorization } from './pages';
+import { Authorization, Registration } from './pages';
 import { ControlPanel } from './components/header/components';
 import styled from 'styled-components';
 import './App.css';
+import { useEffect } from 'react';
+import { useServerRequest } from './hooks/use-server-request';
 
 const Content = styled.div`
 	display: flex;
@@ -16,6 +18,16 @@ const Content = styled.div`
 `;
 
 export const Tracker = () => {
+	const requestServer = useServerRequest();
+
+	useEffect(() => {
+		Promise.all([requestServer('fetchUsers')]).then(([usersRes]) => {
+			if (usersRes.error && window.location.pathname !== '/') {
+				window.location.replace('/');
+			}
+		});
+	}, [requestServer, window.location.pathname]);
+
 	return (
 		<>
 			<Header />
@@ -23,7 +35,7 @@ export const Tracker = () => {
 			<Content>
 				<Routes>
 					<Route path="/" element={<Authorization />} />
-					<Route path="/register" element={<div>Страница регистрации /register</div>} />
+					<Route path="/register" element={<Registration />} />
 					<Route path="/user" element={<ControlPanel />}>
 						<Route path="home" element={<div>Главная страница /</div>} />
 						<Route path="projects" element={<div>Страница списка проектов projects</div>}>

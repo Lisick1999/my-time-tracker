@@ -2,6 +2,7 @@ import { getUser } from './get-user';
 import { addUser } from './add-user';
 // import { createSession } from './create-session';
 import { sessions } from './sessions';
+import { fetchUsers } from './operations';
 
 export const server = {
 	// РУЧКА ДЛЯ АВТОРИЗАЦИИ
@@ -43,10 +44,10 @@ export const server = {
 	// РУЧКА ДЛЯ РЕГИСТРАЦИИ
 
 	// для регистрации пользователь присылает логин и пароль
-	async register(regLogin, regPassword, nameUser) {
+	async register(regLogin, regPassword, userName) {
 		// поиск пользователя по логину
 		const userExists = await getUser(regLogin);
-
+		console.log(regLogin, userExists);
 		// если пользователь найден, то вернуть ошибку и не продолжать регистрацию
 		if (userExists) {
 			return {
@@ -59,20 +60,23 @@ export const server = {
 		// если пользователь не найден, то логин свободен , пароль можно не проверять
 
 		// добавить нового пользователя в базу данных, передаем логин (regLogin), пароль (regPassword) и имя пользователя (nameUser)
-		const newUser = await addUser(regLogin, regPassword, nameUser);
-		const user = await getUser(regLogin);
+		const user = await addUser(regLogin, regPassword, userName);
 
-		if (!user) {
-			return { error: 'Ошибка при создании пользователя', res: null };
-		}
 		// вернуть сообщение, что ошибки нет, ответ (res) - информация о том, что пользователь зарегистрировался (отправить сессию), если пользователь зарегистрировался, его можно сразу авторизовать
 		return {
 			error: null,
 			res: {
 				id: user.id,
 				email: user.email,
+				userName: user.userName,
 				session: sessions.create(user),
 			},
 		};
 	},
+
+	async logout(userSession) {
+		sessions.remove(userSession);
+	},
+
+	fetchUsers,
 };
