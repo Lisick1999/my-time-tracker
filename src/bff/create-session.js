@@ -1,4 +1,4 @@
-export const createSession = () => {
+export const createSession = (session) => {
 	return {
 		// когда пользователь нажмет logout, пройдем по всем методам сессии и удалим все методы, которые у него есть. key - имя метода
 		logout() {

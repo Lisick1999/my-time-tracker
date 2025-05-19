@@ -1,6 +1,7 @@
 import { getUser } from './get-user';
 import { addUser } from './add-user';
-import { createSession } from './create-session';
+// import { createSession } from './create-session';
+import { sessions } from './sessions';
 
 export const server = {
 	// РУЧКА ДЛЯ АВТОРИЗАЦИИ
@@ -18,7 +19,7 @@ export const server = {
 		}
 
 		// проверить, что полученный пароль совпадает с паролем найденного пользователя
-		if (authPassword) {
+		if (user.password !== authPassword) {
 			return {
 				error: 'Неверный пароль',
 				// никаких данных не отправлять
@@ -30,7 +31,12 @@ export const server = {
 
 		return {
 			error: null,
-			res: createSession(),
+			res: {
+				id: user.id,
+				email: user.email,
+				userName: user.userName,
+				session: sessions.create(user),
+			},
 		};
 	},
 
@@ -39,10 +45,10 @@ export const server = {
 	// для регистрации пользователь присылает логин и пароль
 	async register(regLogin, regPassword, nameUser) {
 		// поиск пользователя по логину
-		const user = await getUser(regLogin);
+		const userExists = await getUser(regLogin);
 
 		// если пользователь найден, то вернуть ошибку и не продолжать регистрацию
-		if (user) {
+		if (userExists) {
 			return {
 				error: 'Такой логин уже занят',
 				// никаких данных не отправлять
@@ -53,12 +59,20 @@ export const server = {
 		// если пользователь не найден, то логин свободен , пароль можно не проверять
 
 		// добавить нового пользователя в базу данных, передаем логин (regLogin), пароль (regPassword) и имя пользователя (nameUser)
-		await addUser(regLogin, regPassword, nameUser);
+		const newUser = await addUser(regLogin, regPassword, nameUser);
+		const user = await getUser(regLogin);
 
+		if (!user) {
+			return { error: 'Ошибка при создании пользователя', res: null };
+		}
 		// вернуть сообщение, что ошибки нет, ответ (res) - информация о том, что пользователь зарегистрировался (отправить сессию), если пользователь зарегистрировался, его можно сразу авторизовать
 		return {
 			error: null,
-			res: createSession(),
+			res: {
+				id: user.id,
+				email: user.email,
+				session: sessions.create(user),
+			},
 		};
 	},
 };

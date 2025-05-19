@@ -1,32 +1,30 @@
-import { Route, Routes, Outlet } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import { Header } from './components';
+import { Authorization } from './pages';
+import { ControlPanel } from './components/header/components';
 import styled from 'styled-components';
 import './App.css';
 
 const Content = styled.div`
-	padding: 120px 0;
-`;
-const Header = () => <div>Шапка страницы</div>;
-const Footer = () => <div>Подвал страницы</div>;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 1200px;
 
-const UserPage = () => {
-	return (
-		<div>
-			<h2>Страница пользователя</h2>
-			{/* Здесь будет отображаться вложенный маршрут */}
-			<Outlet />
-		</div>
-	);
-};
+	min-height: 100%;
+	margin: 0 auto;
+`;
 
 export const Tracker = () => {
 	return (
 		<>
 			<Header />
+
 			<Content>
 				<Routes>
-					<Route path="/login" element={<div>Страница авторизации /login</div>} />
+					<Route path="/" element={<Authorization />} />
 					<Route path="/register" element={<div>Страница регистрации /register</div>} />
-					<Route path="/" element={<UserPage />}>
+					<Route path="/user" element={<ControlPanel />}>
 						<Route path="home" element={<div>Главная страница /</div>} />
 						<Route path="projects" element={<div>Страница списка проектов projects</div>}>
 							<Route path="create" element={<div>Страница создания проекта /projects/create</div>} />
@@ -38,7 +36,6 @@ export const Tracker = () => {
 					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>
 			</Content>
-			<Footer />
 		</>
 	);
 };

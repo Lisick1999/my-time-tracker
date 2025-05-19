@@ -2,9 +2,9 @@
 	"users": [
 		{
 			"id": "001",
-			"login": "kek",
+			"login": "kekek@kek.kek",
 			"password": "qwe123",
-			"name": "anton",
+			"userName": "anton",
 			"created_at": "1999-01-01",
 			"updated_at": "2005-10-15"
 		}
