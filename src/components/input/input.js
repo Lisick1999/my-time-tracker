@@ -12,6 +12,9 @@ export const Input = styled(InputContainer)`
 	border-radius: 4px;
 	border: 1px solid #ccc;
 
+	background-color: ${(props) => (props.disabled ? '#f0f0f0' : '#fff')};
+	cursor: ${(props) => (props.disabled ? 'not-allowed' : 'text')};
+
 	font-size: 24px;
 
 	&:focus {

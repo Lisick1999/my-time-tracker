@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAuth, selectUserName, selectUserSession } from '../../../../selectors';
 import { Icon } from '../../../icon/icon';
@@ -13,6 +13,15 @@ const NavLink = styled(Link)`
 	&:hover {
 		color: #007bff;
 	}
+`;
+
+const Container = styled.div`
+	max-width: 400px;
+	margin: 100px auto;
+	padding: 20px;
+	border-radius: 8px;
+	font-family: Arial, sans-serif;
+	background-color: #fff;
 `;
 
 const UserIcon = () => (
@@ -38,30 +47,35 @@ const ControlPanelContainer = ({ className }) => {
 	const navigate = useNavigate();
 
 	return (
-		<nav className={className}>
-			<NavLink className="header-nav" to="/home">
-				Главная
-			</NavLink>
-			<NavLink className="header-nav" to="/projects">
-				Проекты
-			</NavLink>
-			<NavLink className="header-nav" to="/analytics">
-				Аналитика
-			</NavLink>
-			{/* <div style={{ fontSize: '20px' }}>{name}</div> */}
-			{userName || 'Нет имени'}
-			<NavLink className="header-nav" to="/settings">
-				<UserIcon />
-			</NavLink>
-			<Icon
-				id="fa-sign-out"
-				size="35px"
-				onClick={() => {
-					dispatch(logout(session));
-					navigate('/');
-				}}
-			/>
-		</nav>
+		<>
+			<nav className={className}>
+				<NavLink className="header-nav" to="/user/home">
+					Главная
+				</NavLink>
+				<NavLink className="header-nav" to="/user/projects">
+					Задачи
+				</NavLink>
+				<NavLink className="header-nav" to="/user/analytics">
+					Аналитика
+				</NavLink>
+				{userName || 'Нет имени'}
+				<NavLink className="header-nav" to="/user/settings">
+					<UserIcon />
+				</NavLink>
+				<Icon
+					id="fa-sign-out"
+					size="35px"
+					onClick={() => {
+						dispatch(logout(session));
+						navigate('/');
+					}}
+				/>
+			</nav>
+
+			<Container>
+				<Outlet />
+			</Container>
+		</>
 	);
 };
 

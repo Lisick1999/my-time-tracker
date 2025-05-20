@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { Header } from './components';
-import { Authorization, Registration } from './pages';
+import { Authorization, Registration, UserSettings } from './pages';
 import { ControlPanel } from './components/header/components';
 import styled from 'styled-components';
 import './App.css';
@@ -10,7 +10,8 @@ import { useServerRequest } from './hooks/use-server-request';
 const Content = styled.div`
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+
+	// justify-content: space-between;
 	width: 1200px;
 
 	min-height: 100%;
@@ -43,7 +44,7 @@ export const Tracker = () => {
 							<Route path=":id/edit" element={<div>Страница редактирования проекта /projects/:id/edit</div>} />
 						</Route>
 						<Route path="analytics" element={<div>Страница аналитики /analytics</div>} />
-						<Route path="settings" element={<div>Страница настроек аккаунта /settings</div>} />
+						<Route path="settings" element={<UserSettings />} />
 					</Route>
 					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>
