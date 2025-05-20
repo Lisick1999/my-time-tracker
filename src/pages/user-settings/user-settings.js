@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Icon, Input, H2, Button } from '../../components';
-
-const initialUserData = {
-	userName: 'Иван Иванов',
-	email: 'ivan@example.com',
-	password: 'password123',
-};
-
-// const Container = styled.div`
-// 	max-width: 400px;
-// 	margin: 50px auto;
-// 	padding: 20px;
-// 	border-radius: 8px;
-// 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-// 	font-family: Arial, sans-serif;
-// 	background-color: #fff;
-// `;
+import { Icon, Input, H2 } from '../../components';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser, updateUser } from '../../actions';
+import { useServerRequest } from '../../hooks/use-server-request';
 
 const Card = styled.div`
 	background-color: #fff;
@@ -46,9 +33,17 @@ const ButtonsContainer = styled.div`
 
 // Основной компонент
 const UserSettingsContainer = () => {
-	const [userData, setUserData] = useState(initialUserData);
+	const user = useSelector((state) => state.auth.user);
+	const dispatch = useDispatch();
+	const requestServer = useServerRequest();
+	const [userData, setUserData] = useState(user);
 	const [editMode, setEditMode] = useState(false);
-	const [tempData, setTempData] = useState(initialUserData);
+	const [tempData, setTempData] = useState();
+
+	// Обновляем локальный userData при изменении user из Redux
+	useEffect(() => {
+		setUserData(user);
+	}, [user]);
 
 	// Включение режима редактирования
 	const handleEdit = () => {
@@ -63,15 +58,11 @@ const UserSettingsContainer = () => {
 	};
 
 	// Сохранение данных
-	const handleSave = async () => {
-		try {
-			// Тут должна быть отправка данных на сервер
-			await new Promise((resolve) => setTimeout(resolve, 500));
-			setUserData(userData);
+	const handleSave = (userId, newUserEmail, newUserPassword, newUserName) => {
+		requestServer('updateUserData', userId, newUserEmail, newUserPassword, newUserName).then(() => {
 			setEditMode(false);
-		} catch (error) {
-			alert('Ошибка при сохранении данных');
-		}
+			dispatch(setUser({ ...user, email: newUserEmail, password: newUserPassword, userName: newUserName }));
+		});
 	};
 
 	// Обработчик изменения полей
@@ -104,7 +95,10 @@ const UserSettingsContainer = () => {
 				{!editMode && <Icon id="fa-pencil" onClick={handleEdit} />}
 				{editMode && (
 					<>
-						<Icon id="fa-floppy-o" onClick={handleSave} />
+						<Icon
+							id="fa-floppy-o"
+							onClick={() => handleSave(user.id, userData.email, userData.password, userData.userName)}
+						/>
 						<Icon id="fa-times" onClick={handleCancel} />
 					</>
 				)}

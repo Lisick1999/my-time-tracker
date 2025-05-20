@@ -2,7 +2,7 @@ import { getUser } from './get-user';
 import { addUser } from './add-user';
 // import { createSession } from './create-session';
 import { sessions } from './sessions';
-import { fetchUsers } from './operations';
+import { fetchUsers, updateUserData } from './operations';
 
 export const server = {
 	// РУЧКА ДЛЯ АВТОРИЗАЦИИ
@@ -36,6 +36,7 @@ export const server = {
 				id: user.id,
 				email: user.email,
 				userName: user.userName,
+				password: user.password,
 				session: sessions.create(user),
 			},
 		};
@@ -69,6 +70,7 @@ export const server = {
 				id: user.id,
 				email: user.email,
 				userName: user.userName,
+				password: user.password,
 				session: sessions.create(user),
 			},
 		};
@@ -79,4 +81,5 @@ export const server = {
 	},
 
 	fetchUsers,
+	updateUserData,
 };

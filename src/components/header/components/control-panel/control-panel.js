@@ -84,6 +84,7 @@ export const ControlPanel = styled(ControlPanelContainer)`
 	gap: 20px;
 	font-size: 25px;
 	margin-top: 30px;
+	align-items: center;
 
 	& .header-nav {
 		margin: 0 auto;

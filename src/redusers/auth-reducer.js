@@ -22,6 +22,11 @@ export const authReducer = (state = initialAuthState, action) => {
 				user: null,
 				prevWasLogout: true, // при выходе устанавливаем флаг
 			};
+		case 'UPDATE_USER':
+			return {
+				...state,
+				user: { ...action.payload },
+			};
 		default:
 			return state;
 	}
