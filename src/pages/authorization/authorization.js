@@ -99,7 +99,7 @@ export const AuthorizationContainer = ({ className }) => {
 				return;
 			}
 			dispatch(setUser(res));
-			navigate('/user');
+			navigate('/home');
 			// reset();
 		});
 	};

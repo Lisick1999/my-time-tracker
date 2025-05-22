@@ -2,7 +2,7 @@ import { getUser } from './get-user';
 import { addUser } from './add-user';
 // import { createSession } from './create-session';
 import { sessions } from './sessions';
-import { fetchUsers, updateUserData } from './operations';
+import { fetchUsers, updateUserData, fetchProjects, removeProject, fetchCreateProject, fetchUpdateProject } from './operations';
 
 export const server = {
 	// РУЧКА ДЛЯ АВТОРИЗАЦИИ
@@ -82,4 +82,8 @@ export const server = {
 
 	fetchUsers,
 	updateUserData,
+	fetchProjects,
+	removeProject,
+	fetchCreateProject,
+	fetchUpdateProject,
 };

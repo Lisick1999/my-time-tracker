@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { Header } from './components';
-import { Authorization, Registration, UserSettings } from './pages';
+import { Authorization, CreateEditProject, Projects, Registration, UserSettings } from './pages';
 import { ControlPanel } from './components/header/components';
 import styled from 'styled-components';
 import './App.css';
@@ -37,16 +37,15 @@ export const Tracker = () => {
 				<Routes>
 					<Route path="/" element={<Authorization />} />
 					<Route path="/register" element={<Registration />} />
-					<Route path="/user" element={<ControlPanel />}>
-						<Route path="home" element={<div>Главная страница /</div>} />
-						<Route path="projects" element={<div>Страница списка проектов projects</div>}>
-							<Route path="create" element={<div>Страница создания проекта /projects/create</div>} />
-							<Route path=":id/edit" element={<div>Страница редактирования проекта /projects/:id/edit</div>} />
-						</Route>
-						<Route path="analytics" element={<div>Страница аналитики /analytics</div>} />
-						<Route path="settings" element={<UserSettings />} />
+					<Route path="" element={<ControlPanel />}>
+						<Route path="/home" element={<div>Главная страница /</div>} />
+						<Route path="/projects" element={<Projects />} />
+						<Route path="/projects/create" element={<CreateEditProject />} />
+						<Route path="/projects/:id/edit" element={<CreateEditProject />} />
+						<Route path="/analytics" element={<div>Страница аналитики /analytics</div>} />
+						<Route path="/settings" element={<UserSettings />} />
+						<Route path="*" element={<div>Ошибка</div>} />
 					</Route>
-					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>
 			</Content>
 		</>

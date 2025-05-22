@@ -49,17 +49,17 @@ const ControlPanelContainer = ({ className }) => {
 	return (
 		<>
 			<nav className={className}>
-				<NavLink className="header-nav" to="/user/home">
+				<NavLink className="header-nav" to="/home">
 					Главная
 				</NavLink>
-				<NavLink className="header-nav" to="/user/projects">
+				<NavLink className="header-nav" to="/projects">
 					Задачи
 				</NavLink>
-				<NavLink className="header-nav" to="/user/analytics">
+				<NavLink className="header-nav" to="/analytics">
 					Аналитика
 				</NavLink>
 				{userName || 'Нет имени'}
-				<NavLink className="header-nav" to="/user/settings">
+				<NavLink className="header-nav" to="/settings">
 					<UserIcon />
 				</NavLink>
 				<Icon
