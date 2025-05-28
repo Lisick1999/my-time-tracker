@@ -6,3 +6,4 @@ export * from './add-project';
 export * from './add-task';
 export * from './update-project';
 export * from './get-projects';
+export * from './timer-actions';

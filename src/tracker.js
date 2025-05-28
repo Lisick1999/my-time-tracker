@@ -1,11 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
 import { Header } from './components';
-import { Authorization, CreateEditProject, Projects, Registration, UserSettings } from './pages';
+import { Authorization, CreateEditProject, Projects, Registration, UserSettings, Main } from './pages';
 import { ControlPanel } from './components/header/components';
 import styled from 'styled-components';
 import './App.css';
 import { useEffect } from 'react';
-import { useServerRequest } from './hooks/use-server-request';
+import { useServerRequest } from './hooks';
 
 const Content = styled.div`
 	display: flex;
@@ -38,7 +38,7 @@ export const Tracker = () => {
 					<Route path="/" element={<Authorization />} />
 					<Route path="/register" element={<Registration />} />
 					<Route path="" element={<ControlPanel />}>
-						<Route path="/home" element={<div>Главная страница /</div>} />
+						<Route path="/home" element={<Main />} />
 						<Route path="/projects" element={<Projects />} />
 						<Route path="/projects/create" element={<CreateEditProject />} />
 						<Route path="/projects/:id/edit" element={<CreateEditProject />} />

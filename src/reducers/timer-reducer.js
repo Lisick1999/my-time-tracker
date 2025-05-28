@@ -1,40 +1,45 @@
-const initialTimerState = {
+import { ACTION_TYPE } from '../actions';
+
+const initialState = {
+	totalSeconds: 0,
 	isRunning: false,
-	startTime: null,
+	isPaused: false,
 	currentProjectId: null,
-	elapsedTime: 0, // Время в миллисекундах
 };
 
-export const timerReducer = (state = initialTimerState, action) => {
+export const timerReducer = (state = initialState, action) => {
 	switch (action.type) {
+		case ACTION_TYPE.START:
+			return {
+				...state,
+				totalSeconds: 0,
+				isRunning: true,
+				isPaused: false,
+			};
+		case ACTION_TYPE.PAUSE:
+			return { ...state, isPaused: true, isRunning: false };
+		case ACTION_TYPE.RESUME:
+			return { ...state, isPaused: false, isRunning: true };
+		case ACTION_TYPE.RESET:
+			return { ...state, totalSeconds: 0, isRunning: false, isPaused: false, currentProjectId: null };
+		case ACTION_TYPE.TICK:
+			if (state.isRunning) {
+				return { ...state, totalSeconds: state.totalSeconds + 1 };
+			}
+			return state;
+		case ACTION_TYPE.SET_PROJECT_TIMER:
+			console.log(action.payload);
+			return { ...state, currentProjectId: action.payload };
 		default:
 			return state;
 	}
-	// switch (action.type) {
-	// 	case 'START_TIMER':
-	// 		return {
-	// 			...state,
-	// 			isRunning: true,
-	// 			startTime: Date.now(),
-	// 			currentProjectId: action.payload,
-	// 		};
-	// 	case 'STOP_TIMER':
-	// 		if (state.isRunning) {
-	// 			// Проверяем, что таймер запущен
-	// 			return {
-	// 				...state,
-	// 				isRunning: false,
-	// 				elapsedTime: state.elapsedTime + (Date.now() - state.startTime),
-	// 				startTime: null,
-	// 			};
-	// 		}
-	// 		return state; // Если таймер не запущен, возвращаем текущее состояние
-	// 	case 'RESET_TIMER':
-	// 		return {
-	// 			...state,
-	// 			elapsedTime: 0,
-	// 		};
-	// 	default:
-	// 		return state;
-	// }
 };
+
+// // Создание action creators
+// const startTimer = () => ({ type: ACTIONS.START });
+// const pauseTimer = () => ({ type: ACTIONS.PAUSE });
+// const resumeTimer = () => ({ type: ACTIONS.RESUME });
+// const stopTimer = () => ({ type: ACTIONS.STOP });
+// const tick = () => ({ type: ACTIONS.TICK });
+//
+// // Начальное состояние
