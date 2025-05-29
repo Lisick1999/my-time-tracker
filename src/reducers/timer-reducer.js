@@ -28,7 +28,6 @@ export const timerReducer = (state = initialState, action) => {
 			}
 			return state;
 		case ACTION_TYPE.SET_PROJECT_TIMER:
-			console.log(action.payload);
 			return { ...state, currentProjectId: action.payload };
 		default:
 			return state;

@@ -50,7 +50,6 @@ const MainContainer = () => {
 		}
 	}, [projects, currentProjectId, dispatch]);
 
-	console.log(kek, '1');
 	return (
 		<div>
 			<div>

@@ -76,22 +76,6 @@ export const AuthorizationContainer = ({ className }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	// Используем селектор для отслеживания prevWasLogout
-	const prevWasLogout = useSelector((state) => state.auth?.prevWasLogout);
-	// const user = useSelector((state) => state.auth?.user);
-
-	// useEffect(() => {
-	// 	if (user) {
-	// 		navigate('/user');
-	// 	}
-	// }, [user, navigate]);
-	// Когда prevWasLogout меняется на true — сбрасываем форму
-	// useEffect(() => {
-	// 	if (prevWasLogout) {
-	// 		reset();
-	// 	}
-	// }, [prevWasLogout, reset]);
-
 	const onSubmit = ({ email, password }) => {
 		server.authorize(email, password).then(({ error, res }) => {
 			if (error) {
@@ -99,6 +83,11 @@ export const AuthorizationContainer = ({ className }) => {
 				return;
 			}
 			dispatch(setUser(res));
+			console.log('Диспатч setUser:', res);
+
+			sessionStorage.setItem('userData', JSON.stringify(res));
+
+			console.log('Сохранено в sessionStorage:', res);
 			navigate('/home');
 			// reset();
 		});

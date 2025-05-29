@@ -46,6 +46,12 @@ const ControlPanelContainer = ({ className }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
+	const onLogout = () => {
+		dispatch(logout(session));
+		sessionStorage.removeItem('userData');
+		navigate('/');
+	};
+
 	return (
 		<>
 			<nav className={className}>
@@ -62,14 +68,7 @@ const ControlPanelContainer = ({ className }) => {
 				<NavLink className="header-nav user-icon" to="/settings">
 					<UserIcon />
 				</NavLink>
-				<Icon
-					id="fa-sign-out"
-					size="35px"
-					onClick={() => {
-						dispatch(logout(session));
-						navigate('/');
-					}}
-				/>
+				<Icon id="fa-sign-out" size="35px" onClick={onLogout} />
 			</nav>
 
 			<Outlet />
