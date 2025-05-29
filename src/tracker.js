@@ -12,7 +12,7 @@ const Content = styled.div`
 	flex-direction: column;
 
 	// justify-content: space-between;
-	width: 1200px;
+	width: 1400px;
 
 	min-height: 100%;
 	margin: 0 auto;

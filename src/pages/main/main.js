@@ -55,8 +55,8 @@ const MainContainer = () => {
 		<div>
 			<div>
 				<TimerDisplay />
-				<Icon id="fa-play" margin="0 0 0 10px" disabled={isRunning} onClick={handleStart} />
-				<Icon id="fa-pause" margin="0 0 0 10px" disabled={!isRunning} onClick={handleStop} />
+				<Icon size="30px" id="fa-play" margin="0 0 0 10px" disabled={isRunning} onClick={handleStart} />
+				<Icon size="30px" id="fa-pause" margin="0 0 0 10px" disabled={!isRunning} onClick={handleStop} />
 			</div>
 			<select
 				value={currentProjectId || ''}
@@ -74,8 +74,10 @@ const MainContainer = () => {
 			</select>
 			<TextAreaStyled value={''} onChange={() => {}} />
 			<div>
-				<Button onClick={() => dispatch(resetTimer())}>Сбросить</Button>
-				<Button>Сохранить</Button>
+				<Button width="250px" onClick={() => dispatch(resetTimer())}>
+					Сбросить
+				</Button>
+				<Button width="250px">Сохранить</Button>
 			</div>
 		</div>
 	);

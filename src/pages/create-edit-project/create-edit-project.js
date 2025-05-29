@@ -4,30 +4,26 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { useServerRequest } from '../../hooks/use-server-request';
 import { getProjects } from '../../actions';
-
-const Container = styled.div`
-	padding: 20px;
-`;
-
-const InputStyled = styled.input`
-	width: 100%;
-	padding: 8px;
-	margin-bottom: 10px;
-`;
+import { Button, H2, Input } from '../../components';
 
 const TextAreaStyled = styled.textarea`
 	width: 100%;
-	height: 80px;
-	padding: 8px;
+	height: 150px;
+	padding: 10px;
+	margin-bottom: 15px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 20px;
+	box-sizing: border-box;
+
+	&:focus {
+		outline: none;
+		border-color: #f5a623;
+		box-shadow: 0 0 5px rgba(245, 166, 35, 0.5);
+	}
 `;
 
-const ButtonGroup = styled.div`
-	display: flex;
-	gap: 10px;
-	margin-top: 10px;
-`;
-
-const CreateEditProjectContainer = () => {
+const CreateEditProjectContainer = ({ className }) => {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -35,15 +31,12 @@ const CreateEditProjectContainer = () => {
 	const user = useSelector((state) => state.auth.user);
 	const requestServer = useServerRequest();
 
-	// Если редактируем — ищем проект
 	const existingProject = projects?.find((p) => p.id === id);
 
-	// Локальные стейты для формы
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [tag, setTag] = useState('');
 
-	// Изначально заполняем поля при редактировании
 	useEffect(() => {
 		if (existingProject) {
 			setName(existingProject.name);
@@ -52,7 +45,6 @@ const CreateEditProjectContainer = () => {
 		}
 	}, [existingProject]);
 
-	// Обработчик сохранения
 	const handleSave = (userId, name, description, tag) => {
 		if (id) {
 			requestServer('fetchUpdateProject', userId, id, name, description, tag).then(() => {
@@ -71,31 +63,57 @@ const CreateEditProjectContainer = () => {
 	};
 
 	return (
-		<Container>
-			<h2>{id ? 'Редактировать проект' : 'Создать проект'}</h2>
-			<div>
-				<label>Название проекта:</label>
-				<br />
-				<InputStyled value={name} onChange={(e) => setName(e.target.value)} />
+		<div className={className}>
+			<H2>{id ? 'Редактировать проект' : 'Создать проект'}</H2>
+			<div className="form-group">
+				<label className="form-label">Название проекта:</label>
+				<Input value={name} onChange={(e) => setName(e.target.value)} />
 			</div>
-			<div>
-				<label>Описание:</label>
-				<br />
+			<div className="form-group">
+				<label className="form-label">Описание:</label>
 				<TextAreaStyled value={description} onChange={(e) => setDescription(e.target.value)} />
 			</div>
-			<div>
-				<label>Метка/тег:</label>
-				<br />
-				<InputStyled value={tag} onChange={(e) => setTag(e.target.value)} />
+			<div className="form-group">
+				<label className="form-label">Метка / тег:</label>
+				<Input value={tag} onChange={(e) => setTag(e.target.value)} />
 			</div>
 
-			{/* Кнопки */}
-			<ButtonGroup>
-				<button onClick={() => handleSave(user.id, name, description, tag)}>Сохранить</button>
-				<button onClick={() => navigate('/projects')}>Отмена</button>
-			</ButtonGroup>
-		</Container>
+			<div className="button-container">
+				<Button width="200px" onClick={() => handleSave(user.id, name, description, tag)}>
+					Сохранить
+				</Button>
+				<Button width="200px" onClick={() => navigate('/projects')}>
+					Отмена
+				</Button>
+			</div>
+		</div>
 	);
 };
 
-export const CreateEditProject = styled(CreateEditProjectContainer)``;
+export const CreateEditProject = styled(CreateEditProjectContainer)`
+	background-color: #fff;
+	padding: 40px;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	width: 500px;
+
+	& .form-group {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 15px;
+	}
+
+	& .form-label {
+		font-size: 21px;
+		margin-bottom: 10px;
+		font-weight: bold;
+		color: #555;
+	}
+
+	& .button-container {
+		display: flex;
+		gap: 10px;
+		margin-top: 10px;
+		justify-content: space-between;
+	}
+`;

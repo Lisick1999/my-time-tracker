@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAuth, selectUserName, selectUserSession } from '../../../../selectors';
+import { selectUserName, selectUserSession } from '../../../../selectors';
 import { Icon } from '../../../icon/icon';
 import { logout } from '../../../../actions';
 
@@ -16,8 +16,8 @@ const NavLink = styled(Link)`
 `;
 
 const Container = styled.div`
-	max-width: 400px;
-	margin: 100px auto;
+	max-width: 600px;
+	margin: 10px auto;
 	padding: 20px;
 	border-radius: 8px;
 	font-family: Arial, sans-serif;
@@ -58,8 +58,8 @@ const ControlPanelContainer = ({ className }) => {
 				<NavLink className="header-nav" to="/analytics">
 					Аналитика
 				</NavLink>
-				{userName || 'Нет имени'}
-				<NavLink className="header-nav" to="/settings">
+				{<div className="user-name">{userName}</div> || 'Нет имени'}
+				<NavLink className="header-nav user-icon" to="/settings">
 					<UserIcon />
 				</NavLink>
 				<Icon
@@ -72,33 +72,47 @@ const ControlPanelContainer = ({ className }) => {
 				/>
 			</nav>
 
-			<Container>
-				<Outlet />
-			</Container>
+			<Outlet />
 		</>
 	);
 };
 
 export const ControlPanel = styled(ControlPanelContainer)`
 	display: flex;
-	gap: 20px;
+	align-items: center;
+	padding: 20px 0 20px 20px;
 	font-size: 25px;
 	margin-top: 30px;
-	align-items: center;
+
+	& > *:not(:nth-last-child(-n + 3)) {
+		margin-right: auto;
+	}
+
+	& > *:first-child {
+		margin-left: 0;
+	}
 
 	& .header-nav {
-		margin: 0 auto;
-
 		text-decoration: none;
 		color: #555;
 		font-weight: 500;
 		transition:
 			color 0.3s,
 			transform 0.3s;
+
+		&:hover {
+			color: #007bff;
+			transform: translateY(-2px);
+		}
 	}
 
-	& .header-nav:hover {
-		color: #007bff;
-		transform: translateY(-2px);
+	& .user-name {
+		font-size: 20px;
+		font-weight: bold;
+		color: #333;
+	}
+
+	& .user-icon {
+		margin-left: 15px;
 	}
 `;
