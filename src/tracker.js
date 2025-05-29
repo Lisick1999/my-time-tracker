@@ -4,8 +4,11 @@ import { Authorization, CreateEditProject, Projects, Registration, UserSettings,
 import { ControlPanel } from './components/header/components';
 import styled from 'styled-components';
 import './App.css';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useServerRequest } from './hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from './actions';
+import { selectUser } from './selectors';
 
 const Content = styled.div`
 	display: flex;
@@ -20,14 +23,22 @@ const Content = styled.div`
 
 export const Tracker = () => {
 	const requestServer = useServerRequest();
+	const dispatch = useDispatch();
+	const user = useSelector(selectUser);
 
-	useEffect(() => {
-		Promise.all([requestServer('fetchUsers')]).then(([usersRes]) => {
-			if (usersRes.error && window.location.pathname !== '/') {
+	useLayoutEffect(() => {
+		const currentUserDataJSON = sessionStorage.getItem('userData');
+
+		if (!currentUserDataJSON) {
+			if (!user && window.location.pathname !== '/') {
 				window.location.replace('/');
 			}
-		});
-	}, [requestServer, window.location.pathname]);
+		}
+
+		const currentUserData = JSON.parse(currentUserDataJSON);
+
+		dispatch(setUser({ ...currentUserData, id: currentUserData?.id }));
+	}, [dispatch]);
 
 	return (
 		<>
