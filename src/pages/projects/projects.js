@@ -20,7 +20,6 @@ const ProjectsContainer = ({ className }) => {
 			});
 		}
 	}, [user]);
-
 	const handleCreateProject = () => {
 		navigate('/projects/create');
 	};
@@ -65,7 +64,7 @@ const ProjectsContainer = ({ className }) => {
 
 export const Projects = styled(ProjectsContainer)`
 	padding: 30px;
-	width: 1400px;
+	width: 1360px;
 	margin: 20px 5px 0 5px;
 	background-color: #f9f9f9;
 	border-radius: 12px;

@@ -33,12 +33,3 @@ export const timerReducer = (state = initialState, action) => {
 			return state;
 	}
 };
-
-// // Создание action creators
-// const startTimer = () => ({ type: ACTIONS.START });
-// const pauseTimer = () => ({ type: ACTIONS.PAUSE });
-// const resumeTimer = () => ({ type: ACTIONS.RESUME });
-// const stopTimer = () => ({ type: ACTIONS.STOP });
-// const tick = () => ({ type: ACTIONS.TICK });
-//
-// // Начальное состояние

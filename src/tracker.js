@@ -5,26 +5,29 @@ import { ControlPanel } from './components/header/components';
 import styled from 'styled-components';
 import './App.css';
 import { useLayoutEffect } from 'react';
-import { useServerRequest } from './hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from './actions';
 import { selectUser } from './selectors';
 
+const AppContainer = styled.div`
+	font-family: sans-serif; // Use a common font
+	min-height: 100vh; // Ensure it takes the full viewport height
+`;
+
 const Content = styled.div`
 	display: flex;
 	flex-direction: column;
-
-	// justify-content: space-between;
-	width: 1400px;
-
-	min-height: 100%;
+	width: 100%;
+	max-width: 1400px;
 	margin: 0 auto;
+	padding: 20px;
+	box-sizing: border-box;
 `;
 
 export const Tracker = () => {
-	const requestServer = useServerRequest();
 	const dispatch = useDispatch();
 	const user = useSelector(selectUser);
+	const project = useSelector;
 
 	useLayoutEffect(() => {
 		const currentUserDataJSON = sessionStorage.getItem('userData');
@@ -41,7 +44,7 @@ export const Tracker = () => {
 	}, [dispatch]);
 
 	return (
-		<>
+		<AppContainer>
 			<Header />
 
 			<Content>
@@ -59,6 +62,6 @@ export const Tracker = () => {
 					</Route>
 				</Routes>
 			</Content>
-		</>
+		</AppContainer>
 	);
 };

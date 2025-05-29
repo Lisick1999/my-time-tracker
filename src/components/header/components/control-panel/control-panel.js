@@ -15,15 +15,6 @@ const NavLink = styled(Link)`
 	}
 `;
 
-const Container = styled.div`
-	max-width: 600px;
-	margin: 10px auto;
-	padding: 20px;
-	border-radius: 8px;
-	font-family: Arial, sans-serif;
-	background-color: #fff;
-`;
-
 const UserIcon = () => (
 	<svg
 		width="24"

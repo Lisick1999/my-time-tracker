@@ -1,15 +1,14 @@
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useForm } from 'react-hook-form';
+import { useNavigate, Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { server } from '../../bff';
-import { useState } from 'react';
-import styled from 'styled-components';
-import { Button, Input, H2 } from '../../components';
+import { Button, Input, H2, Card, ErrorMessage } from '../../components';
 import { setUser } from '../../actions';
-import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
-// схема для формы (через нее работает yup)
 const regFormSchema = yup.object().shape({
 	email: yup
 		.string()
@@ -30,25 +29,18 @@ const regFormSchema = yup.object().shape({
 		.oneOf([yup.ref('password'), null], 'Пароли не совпадают'),
 });
 
-const Card = styled.div`
-	background-color: #fff;
-	padding: 40px;
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	width: 500px;
-`;
+const AuthLink = styled(Link)`
+	display: block;
+	margin-top: 25px;
+	text-align: center;
+	font-size: 20px;
+	color: #007bff; /* голубой */
+	text-decoration: none;
 
-const ErrorMessage = styled.div`
-	font-size: 20px; /* Размер шрифта чуть больше обычного, но не слишком крупный */
-	color: #a94442; /* Теплый темно-красный цвет */
-	background-color: #f2dede; /* Светлый бледно-красный фон */
-	padding: 12px 20px; /* Внутренние отступы */
-	border: 1px solid #ebccd1; /* Тонкая рамка в оттенке красного */
-	border-radius: 4px; /* Скругление углов чуть меньше */
-	margin-bottom: 20px; /* Отступ снизу для разделения */
-	margin-top: 20px; /* Отступ снизу для разделения */
-	font-weight: normal; /* Нормальный вес шрифта, чтобы не было жирным */
-	text-align: center; /* Центрирование текста */
+	&:hover {
+		text-decoration: none;
+		color: #0056b3;
+	}
 `;
 
 export const RegistrationContainer = ({ className }) => {
@@ -123,6 +115,7 @@ export const RegistrationContainer = ({ className }) => {
 						Зарегистрироваться
 					</Button>
 					{errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+					<AuthLink to="/">Авторизации</AuthLink>
 				</form>
 			</Card>
 		</div>
@@ -135,5 +128,4 @@ export const Registration = styled(RegistrationContainer)`
 	align-items: center;
 	justify-content: center;
 	min-height: 100vh;
-	background-color: #f0f0f0;
 `;

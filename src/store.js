@@ -1,12 +1,11 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { thunk } from 'redux-thunk'; // Импортируем thunk
-import { authReducer, projectsReducer, timeEntriesReducer, timerReducer } from './reducers';
+import { authReducer, projectsReducer, timerReducer } from './reducers';
 
 const reducer = combineReducers({
 	auth: authReducer,
 	projects: projectsReducer,
 	timer: timerReducer,
-	timeEntries: timeEntriesReducer,
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

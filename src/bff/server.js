@@ -2,7 +2,15 @@ import { getUser } from './get-user';
 import { addUser } from './add-user';
 // import { createSession } from './create-session';
 import { sessions } from './sessions';
-import { fetchUsers, updateUserData, fetchProjects, removeProject, fetchCreateProject, fetchUpdateProject } from './operations';
+import {
+	fetchUsers,
+	updateUserData,
+	fetchProjects,
+	removeProject,
+	fetchCreateProject,
+	fetchUpdateProject,
+	saveTimerData,
+} from './operations';
 
 export const server = {
 	// РУЧКА ДЛЯ АВТОРИЗАЦИИ
@@ -48,7 +56,6 @@ export const server = {
 	async register(regLogin, regPassword, userName) {
 		// поиск пользователя по логину
 		const userExists = await getUser(regLogin);
-		console.log(regLogin, userExists);
 		// если пользователь найден, то вернуть ошибку и не продолжать регистрацию
 		if (userExists) {
 			return {
@@ -86,4 +93,5 @@ export const server = {
 	removeProject,
 	fetchCreateProject,
 	fetchUpdateProject,
+	saveTimerData,
 };

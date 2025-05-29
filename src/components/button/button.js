@@ -11,7 +11,7 @@ const ButtonContainer = ({ children, className, width, ...props }) => {
 export const Button = styled(ButtonContainer)`
 	width: ${({ width = '100%' }) => width};
 	padding: 14px;
-	background-color: #f5a623; /* ваш цвет */
+	background-color: ${({ disabled }) => (disabled ? '#ccc' : '#f5a623')};
 	color: #fff;
 	font-size: 24px;
 	border-radius: 4px;

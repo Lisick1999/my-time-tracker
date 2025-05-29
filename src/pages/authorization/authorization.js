@@ -1,35 +1,19 @@
-// пакеты для формы
 import { useForm } from 'react-hook-form';
-// yup для валидации полей
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-// сервер
 import { server } from '../../bff';
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Button, Input, H2 } from '../../components';
-import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../../actions';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Button, Input, H2, Card, ErrorMessage } from '../../components';
+import { setUser } from '../../actions';
+import styled from 'styled-components';
 
-// схема для формы (через нее работает yup)
 const authFormSchema = yup.object().shape({
 	email: yup.string().required('Заполните логин'),
-	// .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Введите email'),
 	password: yup.string().required('Заполните пароль'),
-	// .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=$$$${};':"\\|,.<>\/?]).{8,}$/, 'Неверно заполнен пароль.')
-	// .min(8, 'Неверно заполнен пароль. Пароль должен содержать минимум 8 символов'),
 });
-
-const Card = styled.div`
-	background-color: #fff;
-	padding: 40px;
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	width: 500px;
-`;
 
 const RegisterLink = styled(Link)`
 	display: block;
@@ -40,28 +24,14 @@ const RegisterLink = styled(Link)`
 	text-decoration: none;
 
 	&:hover {
-		text-decoration: none; /* убрать подчеркивание при наведении */
-		color: #0056b3; /* чуть темнее при наведении */
+		text-decoration: none;
+		color: #0056b3;
 	}
-`;
-
-const ErrorMessage = styled.div`
-	font-size: 20px; /* Размер шрифта чуть больше обычного, но не слишком крупный */
-	color: #a94442; /* Теплый темно-красный цвет */
-	background-color: #f2dede; /* Светлый бледно-красный фон */
-	padding: 12px 20px; /* Внутренние отступы */
-	border: 1px solid #ebccd1; /* Тонкая рамка в оттенке красного */
-	border-radius: 4px; /* Скругление углов чуть меньше */
-	margin-bottom: 20px; /* Отступ снизу для разделения */
-	margin-top: 20px; /* Отступ снизу для разделения */
-	font-weight: normal; /* Нормальный вес шрифта, чтобы не было жирным */
-	text-align: center; /* Центрирование текста */
 `;
 
 export const AuthorizationContainer = ({ className }) => {
 	const {
 		register,
-		reset,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
@@ -83,13 +53,10 @@ export const AuthorizationContainer = ({ className }) => {
 				return;
 			}
 			dispatch(setUser(res));
-			console.log('Диспатч setUser:', res);
 
 			sessionStorage.setItem('userData', JSON.stringify(res));
 
-			console.log('Сохранено в sessionStorage:', res);
 			navigate('/home');
-			// reset();
 		});
 	};
 
@@ -115,13 +82,11 @@ export const AuthorizationContainer = ({ className }) => {
 							onChange: () => setServerError(null),
 						})}
 					/>
-					{/* кнопка заблокирована , если есть ошибки формы*/}
 					<Button type="submit" disabled={!!formError}>
 						Войти
 					</Button>
 					{errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
 					<RegisterLink to="/register">Регистрация</RegisterLink>
-					{/* условный рендеринг и вывод сообщения об ошибке */}
 				</form>
 			</Card>
 		</div>

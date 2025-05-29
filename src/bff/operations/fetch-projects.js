@@ -2,7 +2,7 @@ import { getProjects } from '../api';
 import { sessions } from '../sessions';
 
 export const fetchProjects = async (userSession, userId) => {
-	if (!sessions.access(userSession)) {
+	if (!userSession) {
 		return {
 			error: 'Доступ запрещен',
 			res: null,

@@ -4,3 +4,5 @@ export * from './button/button';
 export * from './input/input';
 export * from './h2/h2';
 export * from './timer-display/timer-display';
+export * from './card/card';
+export * from './error-message/error-message';

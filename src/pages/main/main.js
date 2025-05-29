@@ -1,24 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Icon, TimerDisplay } from '../../components';
+import { Button, Card, Icon, TimerDisplay } from '../../components';
 import { resumeTimer, startTimer, pauseTimer, resetTimer, getProjects, setProjectTimer } from '../../actions';
 import styled from 'styled-components';
 import { selectTimer } from '../../selectors';
 import { useServerRequest } from '../../hooks/use-server-request';
 
-const TextAreaStyled = styled.textarea`
-	width: 100%;
-	height: 80px;
-	padding: 8px;
-`;
-
-const MainContainer = () => {
-	const { isRunning, isPaused, currentProjectId } = useSelector(selectTimer);
+const MainContainer = ({ className }) => {
+	const { isRunning, isPaused, currentProjectId, totalSeconds } = useSelector(selectTimer);
 	const dispatch = useDispatch();
 	const user = useSelector((state) => state.auth.user);
 	const requestServer = useServerRequest();
 	const projects = useSelector((state) => state.projects);
-	const kek = useSelector(selectTimer);
+	const [comment, setComment] = useState('');
 
 	const handleStart = () => {
 		if (isRunning) return;
@@ -50,36 +44,140 @@ const MainContainer = () => {
 		}
 	}, [projects, currentProjectId, dispatch]);
 
-	return (
-		<div>
-			<div>
-				<TimerDisplay />
-				<Icon size="30px" id="fa-play" margin="0 0 0 10px" disabled={isRunning} onClick={handleStart} />
-				<Icon size="30px" id="fa-pause" margin="0 0 0 10px" disabled={!isRunning} onClick={handleStop} />
-			</div>
-			<select
-				value={currentProjectId || ''}
-				onChange={(e) => {
-					console.log(e, '2');
+	const saveTimer = (currentProjectId, comment, totalSeconds, userId) => {
+		requestServer('saveTimerData', currentProjectId, comment, totalSeconds, userId).then(() => {
+			setComment('');
+			dispatch(resetTimer());
+		});
+	};
 
-					dispatch(setProjectTimer(e.target.value));
-				}}
-			>
-				{projects.map(({ id: projectId, name: projectName }) => (
-					<option key={projectId} value={projectId}>
-						{projectName}
-					</option>
-				))}
-			</select>
-			<TextAreaStyled value={''} onChange={() => {}} />
-			<div>
-				<Button width="250px" onClick={() => dispatch(resetTimer())}>
-					Сбросить
-				</Button>
-				<Button width="250px">Сохранить</Button>
-			</div>
+	return (
+		<div className={className}>
+			<Card>
+				<div className="timer-section">
+					<TimerDisplay />
+					<Icon size="30px" id="fa-pause" margin="0 0 0 10px" disabled={!isRunning} onClick={handleStop} />
+					<Icon size="30px" id="fa-play" margin="0 20px 0 10px" disabled={isRunning} onClick={handleStart} />
+				</div>
+				<select
+					disabled={isPaused || isRunning}
+					className="timer-select"
+					value={currentProjectId || ''}
+					onChange={(e) => {
+						dispatch(setProjectTimer(e.target.value));
+					}}
+				>
+					{projects.map(({ id: projectId, name: projectName }) => (
+						<option key={projectId} value={projectId}>
+							{projectName}
+						</option>
+					))}
+				</select>
+				<textarea
+					className="main-textarea"
+					value={comment}
+					onChange={(e) => setComment(e.target.value)}
+					placeholder="Комментарий..."
+				/>
+				<div className="button-section">
+					<Button width="250px" onClick={() => dispatch(resetTimer())}>
+						Сбросить
+					</Button>
+					<Button
+						disabled={!isPaused}
+						width="250px"
+						onClick={() => saveTimer(currentProjectId, comment, totalSeconds, user.id)}
+					>
+						Сохранить
+					</Button>
+				</div>
+			</Card>
 		</div>
 	);
 };
 
-export const Main = styled(MainContainer)``;
+export const Main = styled(MainContainer)`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	border-radius: 8px;
+	width: 100%;
+	max-width: 600px;
+	margin: 80px auto;
+
+	& .timer-section {
+		display: flex;
+		align-items: center;
+		margin-bottom: 20px;
+		justify-content: space-between;
+		font-size: 50px;
+	}
+
+	& .timer-select {
+		padding: 10px;
+		border-radius: 5px;
+		border: 1px solid #ddd;
+		margin-bottom: 20px;
+		width: 420px;
+		box-sizing: border-box;
+	}
+
+	& .main-textarea {
+		width: 100%;
+		height: 120px;
+		padding: 12px;
+		border: 1px solid #ccc;
+		border-radius: 5px;
+		margin-bottom: 20px;
+		resize: vertical;
+		font-size: 16px;
+		box-sizing: border-box;
+
+		&:focus {
+			outline: none;
+			border-color: #f5a623; /* оранжевый при фокусе */
+			box-shadow: 0 0 5px rgba(245, 166, 35, 0.5);
+		}
+	}
+
+	& .button-section {
+		display: flex;
+		gap: 15px;
+		width: 100%;
+		justify-content: center;
+	}
+`;
+
+// const TimerControls = styled.div`
+//     display: flex;
+//     align-items: center;
+// `;
+
+// const StyledButton = styled(Button)`
+//     width: 150px; /* Standardize button width */
+//     padding: 10px 15px;
+//     border-radius: 5px;
+//     cursor: pointer;
+//     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+//     transition: background-color 0.3s ease;
+
+//     &:hover {
+//         background-color: #0056b3;
+//     }
+// `;
+
+// const StyledIcon = styled(Icon)`
+//     cursor: pointer; /* Make it obvious they are clickable */
+//     margin: 0 10px; /* Adjust spacing */
+//     color: #555; /* Neutral color */
+
+//     &:hover {
+//         color: #007bff; /* Highlight on hover */
+//     }
+
+//     &[disabled] {
+//         opacity: 0.5;  /* Indicate disabled state */
+//         cursor: not-allowed;
+//     }
+// `;
