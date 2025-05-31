@@ -1,5 +1,4 @@
 import { getProjects } from '../api';
-import { sessions } from '../sessions';
 
 export const fetchProjects = async (userSession, userId) => {
 	if (!userSession) {

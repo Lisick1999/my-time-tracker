@@ -1,8 +1,7 @@
 import { deleteProject } from '../api';
-import { sessions } from '../sessions';
 
 export const removeProject = async (userSession, projectId) => {
-	if (!sessions.access(userSession)) {
+	if (!userSession) {
 		return {
 			error: 'Доступ запрещен',
 			res: null,

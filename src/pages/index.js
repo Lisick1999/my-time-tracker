@@ -4,3 +4,4 @@ export * from './user-settings/user-settings';
 export * from './projects/projects';
 export * from './create-edit-project/create-edit-project';
 export * from './main/main';
+export * from './analytics/analytics';

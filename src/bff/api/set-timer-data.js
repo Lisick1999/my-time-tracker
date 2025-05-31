@@ -1,4 +1,4 @@
-import { getCurrentDate } from '../get-current-date';
+import { getCurrentDate } from './get-current-date';
 
 export const setTimerData = (currentProjectId, comment, totalSeconds, userId) =>
 	fetch(`http://localhost:3005/timeEntries`, {

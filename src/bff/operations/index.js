@@ -6,3 +6,4 @@ export * from './remove-project';
 export * from './fetch-create-project';
 export * from './fetch-update-project';
 export * from './save-timer-data';
+export * from './fetch-analytics';

@@ -1,7 +1,7 @@
 import { setUserData } from '../api';
 
-export const updateUserData = async (session, userId, email, password, userName) => {
-	if (!session) {
+export const updateUserData = async (userSession, userId, email, password, userName) => {
+	if (!userSession) {
 		return {
 			error: 'Доступ запрещен',
 			res: null,

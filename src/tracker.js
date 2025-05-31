@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { Header } from './components';
-import { Authorization, CreateEditProject, Projects, Registration, UserSettings, Main } from './pages';
+import { Authorization, CreateEditProject, Projects, Registration, UserSettings, Main, Analytics } from './pages';
 import { ControlPanel } from './components/header/components';
 import styled from 'styled-components';
 import './App.css';
@@ -27,7 +27,6 @@ const Content = styled.div`
 export const Tracker = () => {
 	const dispatch = useDispatch();
 	const user = useSelector(selectUser);
-	const project = useSelector;
 
 	useLayoutEffect(() => {
 		const currentUserDataJSON = sessionStorage.getItem('userData');
@@ -56,7 +55,7 @@ export const Tracker = () => {
 						<Route path="/projects" element={<Projects />} />
 						<Route path="/projects/create" element={<CreateEditProject />} />
 						<Route path="/projects/:id/edit" element={<CreateEditProject />} />
-						<Route path="/analytics" element={<div>Страница аналитики /analytics</div>} />
+						<Route path="/analytics" element={<Analytics />} />
 						<Route path="/settings" element={<UserSettings />} />
 						<Route path="*" element={<div>Ошибка</div>} />
 					</Route>

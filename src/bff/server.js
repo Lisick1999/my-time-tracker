@@ -1,5 +1,5 @@
-import { getUser } from './get-user';
-import { addUser } from './add-user';
+import { getUser } from './api/get-user';
+import { addUser } from './api/add-user';
 // import { createSession } from './create-session';
 import { sessions } from './sessions';
 import {
@@ -10,6 +10,7 @@ import {
 	fetchCreateProject,
 	fetchUpdateProject,
 	saveTimerData,
+	fetchAnalytics,
 } from './operations';
 
 export const server = {
@@ -94,4 +95,5 @@ export const server = {
 	fetchCreateProject,
 	fetchUpdateProject,
 	saveTimerData,
+	fetchAnalytics,
 };

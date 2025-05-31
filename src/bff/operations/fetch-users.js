@@ -1,8 +1,7 @@
-import { getUsers } from '../get-users';
-import { sessions } from '../sessions';
+import { getUsers } from '../api/get-users';
 
 export const fetchUsers = async (userSession) => {
-	if (!sessions.access(userSession)) {
+	if (!userSession) {
 		return {
 			error: 'Доступ запрещен',
 			res: null,

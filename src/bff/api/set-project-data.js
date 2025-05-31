@@ -1,4 +1,4 @@
-import { getCurrentDate } from '../get-current-date';
+import { getCurrentDate } from './get-current-date';
 
 export const setProjectData = (userId, projectId, name, description, tag) =>
 	fetch(`http://localhost:3005/projects/${projectId}`, {

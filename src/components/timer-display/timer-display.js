@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectTimer } from '../../selectors';
 import { tickTimer } from '../../actions';
+import { formatTime } from '../../utils/format-time';
 
 export const TimerDisplay = () => {
 	const { totalSeconds, isRunning, isPaused } = useSelector(selectTimer);
@@ -21,17 +22,6 @@ export const TimerDisplay = () => {
 
 		return () => clearInterval(timerRef.current);
 	}, [isRunning, isPaused]);
-
-	const formatTime = (seconds) => {
-		const hours = Math.floor(seconds / 3600)
-			.toString()
-			.padStart(2, '0');
-		const minutes = Math.floor((seconds % 3600) / 60)
-			.toString()
-			.padStart(2, '0');
-		const secs = (seconds % 60).toString().padStart(2, '0');
-		return `${hours}:${minutes}:${secs}`;
-	};
 
 	const displayTimer = useMemo(() => {
 		return formatTime(totalSeconds);
