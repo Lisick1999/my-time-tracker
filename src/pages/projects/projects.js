@@ -1,25 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useServerRequest } from '../../hooks/use-server-request';
 import { getProjects } from '../../actions/get-projects';
 import { Button, Icon } from '../../components';
+import { Pagination } from './components';
+import { PAGINATION_LIMIT } from '../../constants';
+import { getLastPageFromLinks } from './utils';
 
 const ProjectsContainer = ({ className }) => {
-	const projects = useSelector((state) => state.projects);
+	const [projects, setProjects] = useState([]);
 	const user = useSelector((state) => state.auth.user);
+
+	const [page, setPage] = useState(1);
+	const [lastPage, setLastPage] = useState(1);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const requestServer = useServerRequest();
 
 	useEffect(() => {
 		if (user?.id) {
-			requestServer('fetchProjects', user.id).then((data) => {
-				dispatch(getProjects(data));
+			requestServer('fetchProjects', user.id, page, PAGINATION_LIMIT).then((data) => {
+				setProjects(data.res);
+				dispatch(getProjects(data.res));
+				setLastPage(getLastPageFromLinks(data.links));
 			});
 		}
-	}, [user]);
+	}, [user, page]);
+
 	const handleCreateProject = () => {
 		navigate('/projects/create');
 	};
@@ -31,7 +40,8 @@ const ProjectsContainer = ({ className }) => {
 	const handleDeleteProject = (id) => {
 		requestServer('removeProject', id).then(() => {
 			requestServer('fetchProjects', user.id).then((data) => {
-				dispatch(getProjects(data));
+				setProjects(data.res);
+				dispatch(getProjects(data.res));
 			});
 		});
 	};
@@ -42,7 +52,7 @@ const ProjectsContainer = ({ className }) => {
 				Создать проект
 			</Button>
 			<div className="card-container">
-				{!!projects.length ? (
+				{projects.length ? (
 					projects.map((project) => (
 						<div className="project-card" key={project.id}>
 							<div className="project-title">{project.name}</div>
@@ -58,19 +68,27 @@ const ProjectsContainer = ({ className }) => {
 					<p>Нет созданных проектов</p>
 				)}
 			</div>
+			{lastPage > 1 && projects.length > 0 && (
+				<div className="pagination-container">
+					<Pagination page={page} lastPage={Number(lastPage)} setPage={setPage} />
+				</div>
+			)}
 		</div>
 	);
 };
 
 export const Projects = styled(ProjectsContainer)`
+	position: relative;
 	padding: 30px;
 	width: 1360px;
+	height: 645px;
 	margin: 20px 5px 0 5px;
 	background-color: #f9f9f9;
 	border-radius: 12px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
 	& .card-container {
+		position: relative;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr); /* 2 колонки, каждая занимает 1fr (равную долю) */
 		gap: 20px; /* Отступы между карточками */
@@ -120,5 +138,13 @@ export const Projects = styled(ProjectsContainer)`
 	& > button {
 		display: block;
 		margin-left: 25px;
+	}
+
+	& .pagination-container {
+		position: absolute;
+		width: 400px;
+		margin: 0 auto;
+		left: 480px;
+		bottom: 8px;
 	}
 `;

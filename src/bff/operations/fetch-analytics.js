@@ -8,7 +8,7 @@ export const fetchAnalytics = async (userSession, userId) => {
 		};
 	}
 
-	const projects = await getProjects(userId);
+	const { projects } = await getProjects(userId);
 	const timers = await getTimers(userId);
 
 	const projectsWithTimers = projects.map((project) => ({

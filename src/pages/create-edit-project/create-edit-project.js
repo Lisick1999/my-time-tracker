@@ -30,7 +30,6 @@ const CreateEditProjectContainer = ({ className }) => {
 	const projects = useSelector((state) => state.projects);
 	const user = useSelector((state) => state.auth.user);
 	const requestServer = useServerRequest();
-
 	const existingProject = projects?.find((p) => p.id === id);
 
 	const [name, setName] = useState('');
@@ -49,13 +48,13 @@ const CreateEditProjectContainer = ({ className }) => {
 		if (id) {
 			requestServer('fetchUpdateProject', userId, id, name, description, tag).then(() => {
 				requestServer('fetchProjects', user.id).then((data) => {
-					dispatch(getProjects(data));
+					dispatch(getProjects(data.res));
 				});
 			});
 		} else {
 			requestServer('fetchCreateProject', userId, name, description, tag).then(() => {
 				requestServer('fetchProjects', user.id).then((data) => {
-					dispatch(getProjects(data));
+					dispatch(getProjects(data.res));
 				});
 			});
 		}

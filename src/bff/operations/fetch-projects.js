@@ -1,6 +1,6 @@
 import { getProjects } from '../api';
 
-export const fetchProjects = async (userSession, userId) => {
+export const fetchProjects = async (userSession, userId, page, limit) => {
 	if (!userSession) {
 		return {
 			error: 'Доступ запрещен',
@@ -8,10 +8,11 @@ export const fetchProjects = async (userSession, userId) => {
 		};
 	}
 
-	const projects = await getProjects(userId);
+	const projects = await getProjects(userId, page, limit);
 
 	return {
 		error: null,
-		res: projects,
+		res: projects.projects,
+		links: projects.links,
 	};
 };

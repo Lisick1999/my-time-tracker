@@ -11,7 +11,7 @@ const MainContainer = ({ className }) => {
 	const dispatch = useDispatch();
 	const user = useSelector((state) => state.auth.user);
 	const requestServer = useServerRequest();
-	const projects = useSelector((state) => state.projects);
+	const [projects, setProjects] = useState([]);
 	const [comment, setComment] = useState('');
 
 	const handleStart = () => {
@@ -33,6 +33,7 @@ const MainContainer = ({ className }) => {
 	useEffect(() => {
 		if (user?.id) {
 			requestServer('fetchProjects', user.id).then((data) => {
+				setProjects(data.res);
 				dispatch(getProjects(data));
 			});
 		}

@@ -1,17 +1,17 @@
-import { Route, Routes } from 'react-router-dom';
-import { Header } from './components';
+import { useLayoutEffect } from 'react';
+import { Route, Routes, useLocation, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Header, TimerDisplay } from './components';
 import { Authorization, CreateEditProject, Projects, Registration, UserSettings, Main, Analytics } from './pages';
 import { ControlPanel } from './components/header/components';
-import styled from 'styled-components';
-import './App.css';
-import { useLayoutEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from './actions';
-import { selectUser } from './selectors';
+import { selectUser, selectTimer } from './selectors';
+import styled from 'styled-components';
 
 const AppContainer = styled.div`
-	font-family: sans-serif; // Use a common font
-	min-height: 100vh; // Ensure it takes the full viewport height
+	font-family: sans-serif;
+	min-height: 100vh;
+	position: relative;
 `;
 
 const Content = styled.div`
@@ -23,16 +23,38 @@ const Content = styled.div`
 	padding: 20px;
 	box-sizing: border-box;
 `;
+const TimerContainer = styled.div`
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	bottom: 50px;
+	right: 50px;
+	font-size: 25px;
+`;
+
+const HomeLink = styled(Link)`
+	font-size: 18px;
+	color: #007bff;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: none;
+		color: #0056b3;
+	}
+`;
 
 export const Tracker = () => {
 	const dispatch = useDispatch();
 	const user = useSelector(selectUser);
+	const { isRunning } = useSelector(selectTimer);
+	const location = useLocation();
 
 	useLayoutEffect(() => {
 		const currentUserDataJSON = sessionStorage.getItem('userData');
 
 		if (!currentUserDataJSON) {
-			if (!user && window.location.pathname !== '/') {
+			if (!user && location.pathname !== '/') {
 				window.location.replace('/');
 			}
 		}
@@ -45,7 +67,12 @@ export const Tracker = () => {
 	return (
 		<AppContainer>
 			<Header />
-
+			{isRunning && location.pathname !== '/home' && (
+				<TimerContainer>
+					<TimerDisplay />
+					<HomeLink to="/home">К таймеру</HomeLink>
+				</TimerContainer>
+			)}
 			<Content>
 				<Routes>
 					<Route path="/" element={<Authorization />} />
