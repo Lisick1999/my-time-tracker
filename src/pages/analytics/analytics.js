@@ -111,8 +111,8 @@ const AnalyticsContainer = ({ className }) => {
 				<select className="styled-select" value={sortOption} onChange={handleSortChange}>
 					<option value="alphabetAsc">Сортировать по алфавиту (А-Я)</option>
 					<option value="alphabetDesc">Сортировать по алфавиту (Я-А)</option>
-					<option value="dateDesc">Сортировать по дате (новые сверху)</option>
-					<option value="dateAsc">Сортировать по дате (старые сверху)</option>
+					<option value="dateDesc">Сортировать по дате (новые)</option>
+					<option value="dateAsc">Сортировать по дате (старые)</option>
 				</select>
 				<TabButton className="styled-button" isActive={tab === 'table'} onClick={() => setTab('table')} width="100px">
 					Таблица
@@ -123,24 +123,22 @@ const AnalyticsContainer = ({ className }) => {
 			</div>
 			{tab === 'table' && (
 				<div className="styled-table-container">
-					<div>
-						<TableRow>
-							<div className="login-column">Название проекта</div>
-							<div className="registered-at-column">Тег</div>
-							<div className="role-column">Дата создания</div>
-							<div className="role-column">Количество времени</div>
-						</TableRow>
-						{displayedProjects.map((project) => (
-							<ProjectRow
-								key={project.id}
-								id={project.id}
-								nameProject={project.name}
-								tag={project.tag}
-								createdAt={project.created_at}
-								timers={project.timers}
-							/>
-						))}
-					</div>
+					<TableRow>
+						<div className="column-header">Название проекта</div>
+						<div className="column-header">Тег</div>
+						<div className="column-header">Дата создания</div>
+						<div className="column-header">Количество времени</div>
+					</TableRow>
+					{displayedProjects.map((project) => (
+						<ProjectRow
+							key={project.id}
+							id={project.id}
+							nameProject={project.name}
+							tag={project.tag}
+							createdAt={project.created_at}
+							timers={project.timers}
+						/>
+					))}
 				</div>
 			)}
 			{tab === 'chart' && (
@@ -154,12 +152,19 @@ const AnalyticsContainer = ({ className }) => {
 
 export const Analytics = styled(AnalyticsContainer)`
 	width: 1350px;
-	margin: 80px 0 0 10px;
+	margin: 35px 0 0 10px;
 	padding: 24px 32px;
 	background-color: #fff;
 	border-radius: 8px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
+	& .column-header {
+		text-align: center;
+		font-weight: bold;
+		padding: 10px;
+		border-bottom: 2px solid #ccc;
+		background-color: #f1ad3dcf;
+	}
 	& .search-container {
 		display: flex;
 		align-items: center;
@@ -180,64 +185,38 @@ export const Analytics = styled(AnalyticsContainer)`
 	}
 
 	& .styled-select {
-		min-width: 140px;
-		padding: 8px 12px;
+		padding: 5px 7px;
 		border-radius: 6px;
-		border: 1.5px solid #d1d5da;
-		background: white;
 		font-size: 14px;
-		color: #24292e;
 		cursor: pointer;
-		transition: border-color 0.2s ease;
+
 		&:hover,
 		&:focus {
-			border-color: #0366d6;
+			border-color: #f5a623;
 			outline: none;
 		}
 	}
+
 	& .styled-button {
-		background: transparent;
 		border: none;
 		font-weight: 600;
 		font-size: 16px;
-		padding: 8px 20px;
+		padding: 8px 10px;
 		color: #586069;
-		border-radius: 6px;
+		border-radius: 4px;
 		cursor: pointer;
-		transition:
-			color 0.3s ease,
-			background-color 0.3s ease;
-		user-select: none;
+		margin-left: 15px;
+
 		&.active,
 		&.styled-button:hover {
-			background-color: #0366d6;
+			background-color: #f1ad3dcf;
 			color: white;
 		}
 	}
 
 	& .styled-table-container {
-		background: white;
-		border-radius: 12px;
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-		overflow-x: auto;
-		padding: 12px 20px;
-	}
-	/* Таблица: чуть изменим заголовки для четкости */
-	& .login-column,
-	& .registered-at-column,
-	& .role-column {
-		font-weight: 600;
-		font-size: 14px;
-		color: #484f58;
-	}
-	& .no-results-message {
-		position: absolute;
-		top: 57px;
-		display: block;
-		margin-top: 6px;
-		color: #d73a49; /* красный оттенок */
-		font-size: 14px;
-		font-weight: 600;
-		text-align: left;
+		margin-top: 20px;
+
+		padding: 5px; /* Отступы вокруг контейнера */
 	}
 `;

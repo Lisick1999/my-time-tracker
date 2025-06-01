@@ -7,21 +7,20 @@ const ProjectRowContainer = ({ className, nameProject, tag, createdAt, timers })
 
 	return (
 		<div className={className}>
-			<TableRow border>
-				<div className="nameProject-column">{nameProject}</div>
-				<div className="tag-column">{tag}</div>
-				<div className="created-at-column">{createdAt}</div>
-				<div className="time-column">{totalDuration}</div>
+			<TableRow>
+				<div className="project-column">{nameProject}</div>
+				<div className="project-column">{tag}</div>
+				<div className="project-column">{createdAt}</div>
+				<div className="project-column">{totalDuration}</div>
 			</TableRow>
 		</div>
 	);
 };
 
 export const ProjectRow = styled(ProjectRowContainer)`
-	display: flex;
-	margin-top: 10px;
-
-	& select {
-		font-size: 16px;
+	& .project-column {
+		padding: 5px;
+		border: 1px solid #ccc; /* Граница для ячеек */
+		text-align: center;
 	}
 `;

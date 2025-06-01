@@ -6,9 +6,10 @@ import { setUser, updateUser } from '../../actions';
 import { useServerRequest } from '../../hooks/use-server-request';
 
 const Card = styled.div`
-	margin: 80px auto;
+	margin: 40px auto;
+	height: 620px;
 	background-color: #fff;
-	padding: 40px;
+	padding: 0 33px 0 33px;
 	border-radius: 8px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	width: 500px;
