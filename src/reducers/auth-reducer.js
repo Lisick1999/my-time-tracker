@@ -3,7 +3,7 @@ import { ACTION_TYPE } from '../actions';
 const initialAuthState = {
 	isAuthenticated: false,
 	user: null,
-	prevWasLogout: false, // добавляем поле для отслеживания выхода
+	prevWasLogout: false,
 };
 
 export const authReducer = (state = initialAuthState, action) => {
@@ -13,14 +13,14 @@ export const authReducer = (state = initialAuthState, action) => {
 				...state,
 				isAuthenticated: true,
 				user: action.payload.user,
-				prevWasLogout: false, // при входе сбрасываем флаг
+				prevWasLogout: false,
 			};
 		case 'LOGOUT':
 			return {
 				...state,
 				isAuthenticated: false,
 				user: null,
-				prevWasLogout: true, // при выходе устанавливаем флаг
+				prevWasLogout: true,
 			};
 		case 'UPDATE_USER':
 			return {

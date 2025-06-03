@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Card, Icon, TimerDisplay } from '../../components';
 import { resumeTimer, startTimer, pauseTimer, resetTimer, getProjects, setProjectTimer } from '../../actions';
-import styled from 'styled-components';
 import { selectTimer } from '../../selectors';
 import { useServerRequest } from '../../hooks/use-server-request';
+import styled from 'styled-components';
 
 const MainContainer = ({ className }) => {
 	const { isRunning, isPaused, currentProjectId, totalSeconds } = useSelector(selectTimer);
@@ -137,7 +137,7 @@ export const Main = styled(MainContainer)`
 
 		&:focus {
 			outline: none;
-			border-color: #f5a623; /* оранжевый при фокусе */
+			border-color: #f5a623;
 			box-shadow: 0 0 5px rgba(245, 166, 35, 0.5);
 		}
 	}
@@ -149,36 +149,3 @@ export const Main = styled(MainContainer)`
 		justify-content: center;
 	}
 `;
-
-// const TimerControls = styled.div`
-//     display: flex;
-//     align-items: center;
-// `;
-
-// const StyledButton = styled(Button)`
-//     width: 150px; /* Standardize button width */
-//     padding: 10px 15px;
-//     border-radius: 5px;
-//     cursor: pointer;
-//     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-//     transition: background-color 0.3s ease;
-
-//     &:hover {
-//         background-color: #0056b3;
-//     }
-// `;
-
-// const StyledIcon = styled(Icon)`
-//     cursor: pointer; /* Make it obvious they are clickable */
-//     margin: 0 10px; /* Adjust spacing */
-//     color: #555; /* Neutral color */
-
-//     &:hover {
-//         color: #007bff; /* Highlight on hover */
-//     }
-
-//     &[disabled] {
-//         opacity: 0.5;  /* Indicate disabled state */
-//         cursor: not-allowed;
-//     }
-// `;

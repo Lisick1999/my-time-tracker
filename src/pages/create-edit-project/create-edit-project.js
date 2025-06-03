@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
 import { useServerRequest } from '../../hooks/use-server-request';
 import { getProjects } from '../../actions';
 import { Button, H2, Input } from '../../components';
+import styled from 'styled-components';
 
 const TextAreaStyled = styled.textarea`
 	width: 100%;

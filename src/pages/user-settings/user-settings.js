@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Icon, Input, H2 } from '../../components';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUser, updateUser } from '../../actions';
+import { setUser } from '../../actions';
 import { useServerRequest } from '../../hooks/use-server-request';
 
 const Card = styled.div`
@@ -33,7 +33,6 @@ const ButtonsContainer = styled.div`
 	margin-top: 20px;
 `;
 
-// Основной компонент
 const UserSettingsContainer = () => {
 	const user = useSelector((state) => state.auth.user);
 	const dispatch = useDispatch();
@@ -42,24 +41,20 @@ const UserSettingsContainer = () => {
 	const [editMode, setEditMode] = useState(false);
 	const [tempData, setTempData] = useState();
 
-	// Обновляем локальный userData при изменении user из Redux
 	useEffect(() => {
 		setUserData(user);
 	}, [user]);
 
-	// Включение режима редактирования
 	const handleEdit = () => {
 		setTempData(userData);
 		setEditMode(true);
 	};
 
-	// Отмена изменений
 	const handleCancel = () => {
 		setUserData(tempData);
 		setEditMode(false);
 	};
 
-	// Сохранение данных
 	const handleSave = (userId, newUserEmail, newUserPassword, newUserName) => {
 		requestServer('updateUserData', userId, newUserEmail, newUserPassword, newUserName).then(() => {
 			setEditMode(false);
@@ -67,7 +62,6 @@ const UserSettingsContainer = () => {
 		});
 	};
 
-	// Обработчик изменения полей
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setUserData((prev) => ({ ...prev, [name]: value }));
@@ -92,7 +86,6 @@ const UserSettingsContainer = () => {
 				<Input type="password" name="password" value={userData.password} onChange={handleChange} disabled={!editMode} />
 			</FormGroup>
 
-			{/* Кнопки */}
 			<ButtonsContainer>
 				{!editMode && <Icon id="fa-pencil" onClick={handleEdit} />}
 				{editMode && (

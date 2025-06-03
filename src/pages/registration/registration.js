@@ -34,7 +34,7 @@ const AuthLink = styled(Link)`
 	margin-top: 25px;
 	text-align: center;
 	font-size: 20px;
-	color: #007bff; /* голубой */
+	color: #007bff;
 	text-decoration: none;
 
 	&:hover {

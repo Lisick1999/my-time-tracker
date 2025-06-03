@@ -1,4 +1,4 @@
-import { getUsers } from '../api/get-users';
+import { getUsers } from '../api';
 
 export const fetchUsers = async (userSession) => {
 	if (!userSession) {

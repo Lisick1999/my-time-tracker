@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
-import { Input, Icon } from '../../components';
-import { TableRow } from './components/table-row/table-row';
-import { ProjectRow } from './components/project-row/project-row';
 import { useSelector } from 'react-redux';
 import { useServerRequest } from '../../hooks';
+import { Input, Icon, Loader } from '../../components';
+import { TableRow } from './components/table-row/table-row';
+import { ProjectRow } from './components/project-row/project-row';
 import { StackedBarChart } from './components/stacked-bar-chart/stacked-bar-chart';
 import { TabButton } from './components/tab-button/tab-button';
+import styled from 'styled-components';
 
 const AnalyticsContainer = ({ className }) => {
 	const [allProjects, setAllProjects] = useState([]);
@@ -14,16 +14,21 @@ const AnalyticsContainer = ({ className }) => {
 	const [searchTag, setSearchTag] = useState('');
 	const [tab, setTab] = useState('table');
 	const [sortOption, setSortOption] = useState('alphabetAsc');
+	const [loading, setLoading] = useState(true);
 	const user = useSelector((state) => state.auth.user);
 	const requestServer = useServerRequest();
 
 	useEffect(() => {
 		if (user?.id) {
-			requestServer('fetchAnalytics', user.id).then((data) => {
-				const projects = data?.res || [];
-				setAllProjects(projects);
-				setDisplayedProjects(applySort(projects, sortOption));
-			});
+			setLoading(true);
+			setTimeout(() => {
+				requestServer('fetchAnalytics', user.id).then((data) => {
+					const projects = data?.res || [];
+					setAllProjects(projects);
+					setDisplayedProjects(applySort(projects, sortOption));
+					setLoading(false);
+				});
+			}, 2000);
 		}
 	}, [user, requestServer]);
 
@@ -90,61 +95,79 @@ const AnalyticsContainer = ({ className }) => {
 
 	return (
 		<div className={className}>
-			<div className="styled-filter-bar">
-				<div className="search-container">
-					<Input
-						placeholder="Поиск по тегам..."
-						value={searchTag}
-						onChange={handleSearchChange}
-						onKeyPress={(e) => {
-							if (e.key === 'Enter') handleSearchClick();
-						}}
-					/>
-					<div className="search-button-container">
-						{searchTag && <Icon id="fa-times" size="25px" onClick={handleClearClick} title="Очистить поиск" />}
-						<Icon id="fa-search" size="25px" onClick={handleSearchClick} />
+			{loading ? (
+				<Loader />
+			) : (
+				<>
+					<div className="styled-filter-bar">
+						<div className="search-container">
+							<Input
+								placeholder="Поиск по тегам..."
+								value={searchTag}
+								onChange={handleSearchChange}
+								onKeyPress={(e) => {
+									if (e.key === 'Enter') handleSearchClick();
+								}}
+							/>
+							<div className="search-button-container">
+								{searchTag && (
+									<Icon id="fa-times" size="25px" onClick={handleClearClick} title="Очистить поиск" />
+								)}
+								<Icon id="fa-search" size="25px" onClick={handleSearchClick} />
+							</div>
+							{searchTag && displayedProjects.length === 0 && (
+								<div className="no-results-message">Задачи с таким тегом не найдено</div>
+							)}
+						</div>
+						<select className="styled-select" value={sortOption} onChange={handleSortChange}>
+							<option value="alphabetAsc">Сортировать по алфавиту (А-Я)</option>
+							<option value="alphabetDesc">Сортировать по алфавиту (Я-А)</option>
+							<option value="dateDesc">Сортировать по дате (новые)</option>
+							<option value="dateAsc">Сортировать по дате (старые)</option>
+						</select>
+						<TabButton
+							className="styled-button"
+							isActive={tab === 'table'}
+							onClick={() => setTab('table')}
+							width="100px"
+						>
+							Таблица
+						</TabButton>
+						<TabButton
+							className="styled-button"
+							isActive={tab === 'chart'}
+							onClick={() => setTab('chart')}
+							width="100px"
+						>
+							График
+						</TabButton>
 					</div>
-					{searchTag && displayedProjects.length === 0 && (
-						<div className="no-results-message">Задачи с таким тегом не найдено</div>
+					{tab === 'table' && (
+						<div className="styled-table-container">
+							<TableRow>
+								<div className="column-header">Название проекта</div>
+								<div className="column-header">Тег</div>
+								<div className="column-header">Дата создания</div>
+								<div className="column-header">Количество времени</div>
+							</TableRow>
+							{displayedProjects.map((project) => (
+								<ProjectRow
+									key={project.id}
+									id={project.id}
+									nameProject={project.name}
+									tag={project.tag}
+									createdAt={project.created_at}
+									timers={project.timers}
+								/>
+							))}
+						</div>
 					)}
-				</div>
-				<select className="styled-select" value={sortOption} onChange={handleSortChange}>
-					<option value="alphabetAsc">Сортировать по алфавиту (А-Я)</option>
-					<option value="alphabetDesc">Сортировать по алфавиту (Я-А)</option>
-					<option value="dateDesc">Сортировать по дате (новые)</option>
-					<option value="dateAsc">Сортировать по дате (старые)</option>
-				</select>
-				<TabButton className="styled-button" isActive={tab === 'table'} onClick={() => setTab('table')} width="100px">
-					Таблица
-				</TabButton>
-				<TabButton className="styled-button" isActive={tab === 'chart'} onClick={() => setTab('chart')} width="100px">
-					График
-				</TabButton>
-			</div>
-			{tab === 'table' && (
-				<div className="styled-table-container">
-					<TableRow>
-						<div className="column-header">Название проекта</div>
-						<div className="column-header">Тег</div>
-						<div className="column-header">Дата создания</div>
-						<div className="column-header">Количество времени</div>
-					</TableRow>
-					{displayedProjects.map((project) => (
-						<ProjectRow
-							key={project.id}
-							id={project.id}
-							nameProject={project.name}
-							tag={project.tag}
-							createdAt={project.created_at}
-							timers={project.timers}
-						/>
-					))}
-				</div>
-			)}
-			{tab === 'chart' && (
-				<div>
-					<StackedBarChart projects={displayedProjects} />
-				</div>
+					{tab === 'chart' && (
+						<div>
+							<StackedBarChart projects={displayedProjects} />
+						</div>
+					)}
+				</>
 			)}
 		</div>
 	);
@@ -165,6 +188,7 @@ export const Analytics = styled(AnalyticsContainer)`
 		border-bottom: 2px solid #ccc;
 		background-color: #f1ad3dcf;
 	}
+
 	& .search-container {
 		display: flex;
 		align-items: center;
@@ -217,6 +241,6 @@ export const Analytics = styled(AnalyticsContainer)`
 	& .styled-table-container {
 		margin-top: 20px;
 
-		padding: 5px; /* Отступы вокруг контейнера */
+		padding: 5px;
 	}
 `;

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import { useServerRequest } from '../../hooks/use-server-request';
 import { getProjects } from '../../actions/get-projects';
 import { Button, Icon } from '../../components';
 import { Pagination } from './components';
 import { PAGINATION_LIMIT } from '../../constants';
 import { getLastPageFromLinks } from './utils';
+import styled from 'styled-components';
 
 const ProjectsContainer = ({ className }) => {
 	const [projects, setProjects] = useState([]);
@@ -90,9 +90,9 @@ export const Projects = styled(ProjectsContainer)`
 	& .card-container {
 		position: relative;
 		display: grid;
-		grid-template-columns: repeat(3, 1fr); /* 2 колонки, каждая занимает 1fr (равную долю) */
-		gap: 20px; /* Отступы между карточками */
-		padding: 15px; /* Общие отступы для контейнера */
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20px;
+		padding: 15px;
 		justify-items: center;
 	}
 

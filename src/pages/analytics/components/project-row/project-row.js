@@ -20,7 +20,7 @@ const ProjectRowContainer = ({ className, nameProject, tag, createdAt, timers })
 export const ProjectRow = styled(ProjectRowContainer)`
 	& .project-column {
 		padding: 5px;
-		border: 1px solid #ccc; /* Граница для ячеек */
+		border: 1px solid #ccc;
 		text-align: center;
 	}
 `;

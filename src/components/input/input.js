@@ -11,15 +11,13 @@ export const Input = styled(InputContainer)`
 	margin-bottom: 35px;
 	border-radius: 4px;
 	border: 1px solid #ccc;
-
 	background-color: ${(props) => (props.disabled ? '#f0f0f0' : '#fff')};
 	cursor: ${(props) => (props.disabled ? 'not-allowed' : 'text')};
-
 	font-size: 24px;
 
 	&:focus {
 		outline: none;
-		border-color: #f5a623; /* оранжевый при фокусе */
+		border-color: #f5a623;
 		box-shadow: 0 0 5px rgba(245, 166, 35, 0.5);
 	}
 `;

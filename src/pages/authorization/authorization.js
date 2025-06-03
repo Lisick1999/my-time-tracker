@@ -1,11 +1,10 @@
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
+import { useNavigate, Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { server } from '../../bff';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { Button, Input, H2, Card, ErrorMessage } from '../../components';
 import { setUser } from '../../actions';
 import styled from 'styled-components';
@@ -20,7 +19,7 @@ const RegisterLink = styled(Link)`
 	margin-top: 25px;
 	text-align: center;
 	font-size: 20px;
-	color: #007bff; /* голубой */
+	color: #007bff;
 	text-decoration: none;
 
 	&:hover {

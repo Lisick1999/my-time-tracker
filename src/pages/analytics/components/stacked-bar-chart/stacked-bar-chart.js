@@ -2,24 +2,20 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { formatTime } from '../../../../utils/format-time';
 
-// Функция для подготовки данных для стека
 const prepareChartData = (projects) => {
 	return projects.map((project) => {
 		const dataPoint = { name: project.name };
-		// Для каждого таймера создаем поле с его duration и сохраняем comment
 		project.timers.forEach((timer) => {
 			dataPoint[`timer_${timer.id}`] = timer.duration;
-			dataPoint[`comment_${timer.id}`] = timer.comment; // Сохраняем comment для Tooltip
+			dataPoint[`comment_${timer.id}`] = timer.comment;
 		});
 		return dataPoint;
 	});
 };
 
 export const StackedBarChart = ({ projects }) => {
-	// Собираем уникальные id таймеров для создания Bar
 	const uniqueTimerIds = [...new Set(projects.flatMap((project) => project.timers.map((timer) => timer.id)))];
 
-	// Цвета для разных таймеров
 	const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#ff4d4f', '#a4de6c', '#d0ed57'];
 
 	const data = prepareChartData(projects);
