@@ -7,3 +7,4 @@ export * from './timer-display/timer-display';
 export * from './card/card';
 export * from './error-message/error-message';
 export * from './loader/loader';
+export * from './error/error';

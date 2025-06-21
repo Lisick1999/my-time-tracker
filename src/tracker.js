@@ -1,12 +1,13 @@
 import { useLayoutEffect } from 'react';
 import { Route, Routes, useLocation, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Header, TimerDisplay } from './components';
+import { Header, TimerDisplay, Error } from './components';
 import { Authorization, CreateEditProject, Projects, Registration, UserSettings, Main, Analytics } from './pages';
 import { ControlPanel } from './components/header/components';
 import { setUser } from './actions';
 import { selectUser, selectTimer } from './selectors';
 import styled from 'styled-components';
+import { ERROR } from './constants/error';
 
 const AppContainer = styled.div`
 	font-family: sans-serif;
@@ -84,7 +85,7 @@ export const Tracker = () => {
 						<Route path="/projects/:id/edit" element={<CreateEditProject />} />
 						<Route path="/analytics" element={<Analytics />} />
 						<Route path="/settings" element={<UserSettings />} />
-						<Route path="*" element={<div>Ошибка</div>} />
+						<Route path="*" element={<Error error={ERROR.PAGE_NOT_EXIST} />} />
 					</Route>
 				</Routes>
 			</Content>
