@@ -84,7 +84,7 @@ export const Tracker = () => {
 						<Route path="/projects/create" element={<CreateEditProject />} />
 						<Route path="/projects/:id/edit" element={<CreateEditProject />} />
 						<Route path="/analytics" element={<Analytics />} />
-						<Route path="/settings" element={<UserSettings />} />
+						<Route path="/users" element={<UserSettings />} />
 						<Route path="*" element={<Error error={ERROR.PAGE_NOT_EXIST} />} />
 					</Route>
 				</Routes>

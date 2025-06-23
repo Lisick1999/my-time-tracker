@@ -1,13 +1,11 @@
 const Project = require("../models/Project");
 
-// создание
 async function addProject(project) {
   const newProject = await Project.create(project);
 
   return newProject;
 }
 
-// редактирование
 async function editProject(id, project) {
   const newProject = await Project.findByIdAndUpdate(id, project, {
     returnDocument: "after",
@@ -16,31 +14,36 @@ async function editProject(id, project) {
   return newProject;
 }
 
-// удаление
 function deleteProject(id) {
   return Project.deleteOne({ _id: id });
 }
 
-// получение списка постов
-async function getProjects(search = "", limit = 6, page = 1) {
-  const [posts, count] = await Promise.all([
-    Project.find({ title: { $regex: search, $options: "i" } })
+async function getProjects(userId, page = 1, limit = 6) {
+  try {
+    const skip = (page - 1) * limit;
+    const projects = await Project.find({ userId })
+      .skip(skip)
       .limit(limit)
-      .skip((page - 1) * limit)
-      .sort({ createdAt: -1 }),
-    Project.countDocuments({ title: { $regex: search, $options: "i" } }),
-  ]);
+      .lean();
+    const totalProjects = await Project.countDocuments({ userId });
+    const lastPage = Math.ceil(totalProjects / limit) || 1;
 
-  return {
-    posts,
-    lastPage: Math.ceil(count / limit),
-  };
+    return {
+      projects: projects.map((project) => ({
+        ...project,
+        id: project._id,
+      })),
+      lastPage,
+    };
+  } catch (error) {
+    throw error;
+  }
 }
 
-// получение одного поста
 function getProject(id) {
   return Project.findById(id);
 }
+
 module.exports = {
   addProject,
   editProject,

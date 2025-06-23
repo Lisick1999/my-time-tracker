@@ -15,62 +15,83 @@ const AnalyticsContainer = ({ className }) => {
 	const [tab, setTab] = useState('table');
 	const [sortOption, setSortOption] = useState('alphabetAsc');
 	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 	const user = useSelector((state) => state.auth.user);
 
 	useEffect(() => {
+		if (user === null) {
+			return;
+		}
 		if (user?.id) {
 			setLoading(true);
-			setTimeout(() => {
-				fetchAnalytics(user.id).then((data) => {
-					const projects = data?.res || [];
-					setAllProjects(projects);
-					setDisplayedProjects(applySort(projects, sortOption));
+			fetchAnalytics(user.id)
+				.then(({ error, EAD, res }) => {
+					if (error) {
+						setError(error);
+						setAllProjects([]);
+						setDisplayedProjects([]);
+					} else {
+						const projects = res || [];
+						setAllProjects(projects);
+						setDisplayedProjects(applySort(projects, sortOption));
+						setError(null);
+					}
+					setLoading(false);
+				})
+				.catch((err) => {
+					setError(`Ошибка загрузки: ${err.message}`);
+					setAllProjects([]);
+					setDisplayedProjects([]);
 					setLoading(false);
 				});
-			}, 2000);
+		} else {
+			setError('Пользователь не авторизован');
+			setAllProjects([]);
+			setDisplayedProjects([]);
+			setLoading(false);
 		}
-	}, [user]);
+	}, [user, sortOption]);
 
 	const applySort = (projects, option) => {
 		const sorted = [...projects];
+
 		switch (option) {
 			case 'alphabetAsc':
-				return sorted.sort((a, b) => a.name.localeCompare(b.name, ['ru', 'en'], { numeric: true, caseFirst: 'upper' }));
+				return sorted.sort((a, b) =>
+					(a.name || '').localeCompare(b.name || '', ['ru', 'en'], { numeric: true, caseFirst: 'upper' }),
+				);
 			case 'alphabetDesc':
-				return sorted.sort((a, b) => b.name.localeCompare(a.name, ['ru', 'en'], { numeric: true, caseFirst: 'upper' }));
+				return sorted.sort((a, b) =>
+					(b.name || '').localeCompare(a.name || '', ['ru', 'en'], { numeric: true, caseFirst: 'upper' }),
+				);
 			case 'dateAsc':
 				return sorted.sort((a, b) => {
-					const dateA = a.created_at.split('/').reverse().join('-');
-					const dateB = b.created_at.split('/').reverse().join('-');
-					return new Date(dateA) - new Date(dateB);
+					const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+					const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+					return dateA - dateB;
 				});
 			case 'dateDesc':
 				return sorted.sort((a, b) => {
-					const dateA = a.created_at.split('/').reverse().join('-');
-					const dateB = b.created_at.split('/').reverse().join('-');
-					return new Date(dateB) - new Date(dateA);
+					const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+					const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+					return dateB - dateA;
 				});
 			default:
-				return projects;
+				return sorted;
 		}
 	};
 
 	const filterAndSortProjects = useCallback(() => {
 		let filtered = allProjects;
+
 		if (searchTag.trim()) {
-			filtered = allProjects.filter((project) => project.tag.toLowerCase().includes(searchTag.toLowerCase()));
+			filtered = allProjects.filter((project) => (project.tag || '').toLowerCase().includes(searchTag.toLowerCase()));
 		}
+
 		const sorted = applySort(filtered, sortOption);
+
 		setDisplayedProjects(sorted);
 	}, [allProjects, searchTag, sortOption]);
-
-	useEffect(() => {
-		if (user?.id) {
-			fetchAnalytics(user.id).then((data) => {
-				setAllProjects(data?.res || []);
-			});
-		}
-	}, [user]);
 
 	useEffect(() => {
 		filterAndSortProjects();
@@ -96,6 +117,8 @@ const AnalyticsContainer = ({ className }) => {
 		<div className={className}>
 			{loading ? (
 				<Loader />
+			) : error ? (
+				<div className="error-message">Ошибка: {error}</div>
 			) : (
 				<>
 					<div className="styled-filter-bar">
@@ -115,7 +138,7 @@ const AnalyticsContainer = ({ className }) => {
 								<Icon id="fa-search" size="25px" onClick={handleSearchClick} />
 							</div>
 							{searchTag && displayedProjects.length === 0 && (
-								<div className="no-results-message">Задачи с таким тегом не найдено</div>
+								<div className="no-results-message">Задачи с таким тегом не найдены</div>
 							)}
 						</div>
 						<select className="styled-select" value={sortOption} onChange={handleSortChange}>
@@ -149,14 +172,22 @@ const AnalyticsContainer = ({ className }) => {
 								<div className="column-header">Дата создания</div>
 								<div className="column-header">Количество времени</div>
 							</TableRow>
+							{displayedProjects.length === 0 && !searchTag && (
+								<div className="no-results-message">Проекты не найдены</div>
+							)}
 							{displayedProjects.map((project) => (
 								<ProjectRow
-									key={project.id}
-									id={project.id}
+									key={project._id}
+									id={project._id}
 									nameProject={project.name}
 									tag={project.tag}
-									createdAt={project.created_at}
-									timers={project.timers}
+									createdAt={
+										project.created_at
+											? new Date(project.created_at).toLocaleDateString('ru-RU')
+											: 'Дата не указана'
+									}
+									timers={project.timers || []}
+									totalDuration={project.totalDuration || 0}
 								/>
 							))}
 						</div>
@@ -171,7 +202,6 @@ const AnalyticsContainer = ({ className }) => {
 		</div>
 	);
 };
-
 export const Analytics = styled(AnalyticsContainer)`
 	width: 1350px;
 	margin: 35px 0 0 10px;

@@ -6,15 +6,15 @@ const prepareChartData = (projects) => {
 	return projects.map((project) => {
 		const dataPoint = { name: project.name };
 		project.timers.forEach((timer) => {
-			dataPoint[`timer_${timer.id}`] = timer.duration;
-			dataPoint[`comment_${timer.id}`] = timer.comment;
+			dataPoint[`timer_${timer._id}`] = timer.duration;
+			dataPoint[`comment_${timer._id}`] = timer.comment;
 		});
 		return dataPoint;
 	});
 };
 
 export const StackedBarChart = ({ projects }) => {
-	const uniqueTimerIds = [...new Set(projects.flatMap((project) => project.timers.map((timer) => timer.id)))];
+	const uniqueTimerIds = [...new Set(projects.flatMap((project) => project.timers.map((timer) => timer._id)))];
 
 	const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#ff4d4f', '#a4de6c', '#d0ed57'];
 

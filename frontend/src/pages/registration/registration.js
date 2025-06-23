@@ -70,7 +70,7 @@ export const RegistrationContainer = ({ className }) => {
 			}
 			dispatch(setUser(user));
 			sessionStorage.setItem('userData', JSON.stringify(user));
-			navigate('/user');
+			navigate('/home');
 		});
 	};
 

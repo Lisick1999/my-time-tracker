@@ -6,7 +6,7 @@ import { Button, H2, Input } from '../../components';
 import styled from 'styled-components';
 import { getProjectsReq } from '../../api/get-projects';
 import { setProjectData } from '../../api/set-project-data';
-import { createProject } from '../../api/create-project';
+import { request } from '../../utils/request';
 
 const TextAreaStyled = styled.textarea`
 	width: 100%;
@@ -36,6 +36,7 @@ const CreateEditProjectContainer = ({ className }) => {
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [tag, setTag] = useState('');
+	const [serverError, setServerError] = useState(null);
 
 	useEffect(() => {
 		if (existingProject) {
@@ -46,24 +47,60 @@ const CreateEditProjectContainer = ({ className }) => {
 	}, [existingProject]);
 
 	const handleSave = (userId, name, description, tag) => {
-		if (id) {
-			setProjectData(userId, id, name, description, tag).then(() => {
-				getProjectsReq(user.id).then((data) => {
-					dispatch(getProjects(data.res));
-				});
-			});
-		} else {
-			createProject(userId, name, description, tag).then(() => {
-				getProjectsReq(user.id).then((data) => {
-					dispatch(getProjects(data.res));
-				});
-			});
+		if (!userId || !name) {
+			setServerError('Пользователь и название проекта обязательны');
+			return;
 		}
-		navigate('/projects');
+
+		const PAGINATION_LIMIT = 6;
+		const page = 1;
+
+		if (id) {
+			setProjectData(userId, id, name, description, tag)
+				.then(({ error }) => {
+					if (error) {
+						setServerError(`Ошибка обновления проекта: ${error}`);
+						return;
+					}
+					return getProjectsReq(userId, page, PAGINATION_LIMIT);
+				})
+				.then(({ error, data }) => {
+					if (error) {
+						setServerError(`Ошибка загрузки проектов: ${error}`);
+						return;
+					}
+					dispatch(getProjects(data?.res || []));
+					navigate('/projects');
+				})
+				.catch((err) => {
+					setServerError(`Неизвестная ошибка: ${err.message}`);
+				});
+		} else {
+			request('/projects', 'POST', { userId, name, description, tag })
+				.then((response) => {
+					if (response.error) {
+						setServerError(`Ошибка создания проекта: ${response.error}`);
+						return;
+					}
+					return getProjectsReq(userId, page, PAGINATION_LIMIT);
+				})
+				.then(({ error, data }) => {
+					if (error) {
+						setServerError(`Ошибка загрузки проектов: ${error}`);
+						return;
+					}
+					dispatch(getProjects(data?.res || []));
+					navigate('/projects');
+				})
+				.catch((err) => {
+					setServerError(`Неизвестная ошибка: ${err.message}`);
+				});
+		}
 	};
 
 	return (
 		<div className={className}>
+			{serverError && <p className="error-message">{serverError}</p>}
 			<H2>{id ? 'Редактировать проект' : 'Создать проект'}</H2>
 			<div className="form-group">
 				<label className="form-label">Название проекта:</label>
@@ -79,7 +116,7 @@ const CreateEditProjectContainer = ({ className }) => {
 			</div>
 
 			<div className="button-container">
-				<Button width="200px" onClick={() => handleSave(user.id, name, description, tag)}>
+				<Button width="200px" onClick={() => handleSave(user?.id, name, description, tag)}>
 					Сохранить
 				</Button>
 				<Button width="200px" onClick={() => navigate('/projects')}>

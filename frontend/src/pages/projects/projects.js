@@ -5,7 +5,6 @@ import { getProjects } from '../../actions/get-projects';
 import { Button, Icon } from '../../components';
 import { Pagination } from './components';
 import { PAGINATION_LIMIT } from '../../constants';
-import { getLastPageFromLinks } from './utils';
 import styled from 'styled-components';
 import { getProjectsReq } from '../../api/get-projects';
 import { deleteProject } from '../../api/delete-project';
@@ -13,23 +12,38 @@ import { deleteProject } from '../../api/delete-project';
 const ProjectsContainer = ({ className }) => {
 	const [projects, setProjects] = useState([]);
 	const user = useSelector((state) => state.auth.user);
-
 	const [page, setPage] = useState(1);
 	const [lastPage, setLastPage] = useState(1);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const [serverError, setServerError] = useState(null);
 
 	useEffect(() => {
 		if (user?.id) {
-			getProjectsReq(user.id, page, PAGINATION_LIMIT).then((data) => {
-				if (data?.res) {
-					setProjects(data?.res);
-					dispatch(getProjects(data?.res));
-					setLastPage(getLastPageFromLinks(data.links));
-				}
-			});
+			getProjectsReq(user.id, page, PAGINATION_LIMIT)
+				.then(({ error, data }) => {
+					if (error) {
+						setServerError(`Ошибка загрузки проектов: ${error}`);
+						setProjects([]);
+						return;
+					}
+
+					const projectsData = data?.projects || [];
+
+					setServerError(null);
+					setProjects(projectsData);
+					dispatch(getProjects(projectsData));
+					setLastPage(data?.lastPage || 1);
+				})
+				.catch((err) => {
+					setServerError(`Неизвестная ошибка: ${err.message}`);
+					setProjects([]);
+				});
+		} else {
+			setProjects([]);
+			setServerError('Пользователь не авторизован');
 		}
-	}, [user, page]);
+	}, [user, page, dispatch]);
 
 	const handleCreateProject = () => {
 		navigate('/projects/create');
@@ -40,11 +54,28 @@ const ProjectsContainer = ({ className }) => {
 	};
 
 	const handleDeleteProject = (id) => {
-		deleteProject(id).then(() => {
-			getProjectsReq(user.id).then((data) => {
-				if (data?.res) {
-					setProjects(data?.res);
-					dispatch(getProjects(data?.res));
+		deleteProject(id).then(({ error }) => {
+			if (error) {
+				setServerError(`Ошибка удаления проекта: ${error}`);
+				return;
+			}
+
+			getProjectsReq(user.id, page, PAGINATION_LIMIT).then(({ error, data }) => {
+				if (error) {
+					setServerError(`Ошибка загрузки проектов: ${error}`);
+					setProjects([]);
+					return;
+				}
+
+				const projectsData = data?.projects || [];
+
+				setServerError(null);
+				if (projectsData.length === 0 && page > 1) {
+					setPage(page - 1);
+				} else {
+					setProjects(projectsData);
+					dispatch(getProjects(projectsData));
+					setLastPage(data?.lastPage || 1);
 				}
 			});
 		});
@@ -55,16 +86,17 @@ const ProjectsContainer = ({ className }) => {
 			<Button width="220px" onClick={handleCreateProject}>
 				Создать проект
 			</Button>
+			{serverError && <p className="error-message">{serverError}</p>}
 			<div className="card-container">
-				{!!projects?.length ? (
+				{projects.length > 0 ? (
 					projects.map((project) => (
-						<div className="project-card" key={project.id}>
+						<div className="project-card" key={project._id}>
 							<div className="project-title">{project.name}</div>
 							<p className="project-description">Описание: {project.description}</p>
 							<p className="project-tag">Метка/тег: {project.tag}</p>
 							<div className="icon-container">
-								<Icon id="fa-pencil" size="35px" onClick={() => handleEditProject(project.id)} />
-								<Icon id="fa-trash" size="35px" onClick={() => handleDeleteProject(project.id)} />
+								<Icon id="fa-pencil" size="35px" onClick={() => handleEditProject(project._id)} />
+								<Icon id="fa-trash" size="35px" onClick={() => handleDeleteProject(project._id)} />
 							</div>
 						</div>
 					))

@@ -1,17 +1,16 @@
 import { TableRow } from '../table-row/table-row';
 import styled from 'styled-components';
-import { formatTime } from '../../../../utils/format-time';
 
-const ProjectRowContainer = ({ className, nameProject, tag, createdAt, timers }) => {
-	const totalDuration = formatTime(timers.reduce((total, timer) => total + timer.duration, 0));
+const ProjectRowContainer = ({ className, id, nameProject, tag, createdAt, timers }) => {
+	const totalDuration = timers.reduce((sum, timer) => sum + Number(timer.duration), 0);
 
 	return (
 		<div className={className}>
 			<TableRow>
-				<div className="project-column">{nameProject}</div>
-				<div className="project-column">{tag}</div>
-				<div className="project-column">{createdAt}</div>
-				<div className="project-column">{totalDuration}</div>
+				<div>{nameProject || 'Без названия'}</div>
+				<div>{tag || 'Без тега'}</div>
+				<div>{createdAt || 'Не указана'}</div>
+				<div>{totalDuration > 0 ? `${totalDuration} сек` : '0 сек'}</div>
 			</TableRow>
 		</div>
 	);

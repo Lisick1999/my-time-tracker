@@ -1,7 +1,7 @@
 import { getCurrentDate } from './get-current-date';
 
 export const addUser = (email, password, userName) =>
-	fetch('http://localhost:3005/users', {
+	fetch('http://localhost:3001/api/users', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',

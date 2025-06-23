@@ -9,28 +9,49 @@ const mapProject = require("../helpers/mapProject");
 const router = express.Router({ mergeParams: true });
 
 router.post("/", async (req, res) => {
-  const newProject = await addProject({
-    // фильтрация полей, которые попадут в контроллер
-    name: req.body.name,
-    description: req.body.description,
-    tag: req.body.description,
-  });
+  try {
+    const { userId, name, description, tag } = req.body;
 
-  res.send({ data: mapProject(newProject) });
+    if (!userId || !name) {
+      return res.status(400).json({ error: "userId and name are required" });
+    }
+
+    const newProject = await addProject({
+      userId,
+      name,
+      description: description || "",
+      tag: tag || "",
+    });
+
+    res.send({ data: mapProject(newProject) });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 router.get("/", async (req, res) => {
-  const { projects, lastPage } = await getProjects(
-    req.query.search,
-    req.query.limit,
-    req.query.page
-  );
+  try {
+    const { userId, page = 1, limit = 6 } = req.query;
 
-  res.send({ data: { lastPage, projects: projects.map(mapProject) } });
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
+    }
+
+    const projectData = await getProjects(
+      userId,
+      parseInt(page),
+      parseInt(limit)
+    );
+
+    res.send({ data: projectData });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 router.patch("/:id", async (req, res) => {
   const updateProject = await editProject(req.params.id, {
+    userId: req.body.userId,
     name: req.body.name,
     description: req.body.description,
     tag: req.body.tag,

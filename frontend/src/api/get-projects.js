@@ -1,21 +1,32 @@
 import { request } from '../utils/request';
 
-// export const getProjectsReq = (userId, page, limit) =>
-// 	request(`/posts?search=${userId}&page=${page}&limit=${limit}`)
-// 		.then((loadedProjects) => Promise.all([loadedProjects.json(), loadedProjects.headers.get('Link')]))
-// 		.then(([loadedProjects, links]) => ({
-// 			projects: loadedProjects,
-// 			links,
-// 		}));
+export const getProjectsReq = (userId, page = 1, limit = 6) => {
+	if (!userId) {
+		return Promise.reject(new Error('userId обязателен'));
+	}
 
-export const getProjectsReq = (userId, page, limit) =>
-	request(`/projects?userId=${userId}&page=${page}&limit=${limit}`)
-		.then((response) => response.json())
-		.then((data) => ({
-			res: data.projects, // Переименовываем projects в res для соответствия MainContainer
-			links: data.lastPage, // Передаем lastPage как links, если нужно
-		}))
+	return request(`/projects?userId=${userId}&page=${page}&limit=${limit}`, 'GET')
+		.then((response) => {
+			if (response.error) {
+				return { error: response.error, data: { projects: [], lastPage: 1 } };
+			}
+
+			const projects = response.data ? response.data.projects : response.projects;
+			const lastPage = response.data ? response.data.lastPage : response.lastPage;
+
+			if (!projects || !Array.isArray(projects)) {
+				return { error: 'Некорректный формат ответа сервера', data: { projects: [], lastPage: 1 } };
+			}
+
+			return {
+				error: null,
+				data: {
+					projects,
+					lastPage: lastPage || 1,
+				},
+			};
+		})
 		.catch((error) => {
-			console.error('Error fetching projects:', error);
-			return { res: [], links: null };
+			return { error: `Ошибка запроса: ${error.message}`, data: { projects: [], lastPage: 1 } };
 		});
+};

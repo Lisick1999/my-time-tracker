@@ -50,13 +50,13 @@ const ControlPanelContainer = ({ className }) => {
 					Главная
 				</NavLink>
 				<NavLink className="header-nav" to="/projects">
-					Задачи
+					Проекты
 				</NavLink>
 				<NavLink className="header-nav" to="/analytics">
 					Аналитика
 				</NavLink>
 				{<div className="user-name">{userName}</div> || 'Нет имени'}
-				<NavLink className="header-nav user-icon" to="/settings">
+				<NavLink className="header-nav user-icon" to="/users">
 					<UserIcon />
 				</NavLink>
 				<Icon id="fa-sign-out" size="35px" onClick={onLogout} />

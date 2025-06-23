@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Icon, Input, H2 } from '../../components';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../actions';
-import { setUserDataReq } from '../../api';
+import { request } from '../../utils/request';
 
 const Card = styled.div`
 	margin: 40px auto;
@@ -55,7 +55,7 @@ const UserSettingsContainer = () => {
 	};
 
 	const handleSave = (userId, newUserEmail, newUserPassword, newUserName) => {
-		setUserDataReq(userId, newUserEmail, newUserPassword, newUserName).then(() => {
+		request(`/users/${userId}`, 'PATCH', { userId, newUserEmail, newUserPassword, newUserName }).then(() => {
 			setEditMode(false);
 			dispatch(setUser({ ...user, email: newUserEmail, password: newUserPassword, userName: newUserName }));
 		});

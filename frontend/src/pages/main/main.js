@@ -13,10 +13,10 @@ const MainContainer = ({ className }) => {
 	const user = useSelector((state) => state.auth.user);
 	const [projects, setProjects] = useState([]);
 	const [comment, setComment] = useState('');
+	const [serverError, setServerError] = useState(null);
 
 	const handleStart = () => {
-		if (isRunning) return;
-
+		if (isRunning || !projects || projects.length === 0) return;
 		if (!isPaused) {
 			dispatch(startTimer());
 		} else {
@@ -26,54 +26,90 @@ const MainContainer = ({ className }) => {
 
 	const handleStop = () => {
 		if (!isRunning) return;
-
 		dispatch(pauseTimer());
 	};
 
 	useEffect(() => {
 		if (user?.id) {
-			getProjectsReq(user.id).then((data) => {
-				setProjects(data.res);
-				dispatch(getProjects(data));
-			});
+			const page = 1;
+			const PAGINATION_LIMIT = 6;
+			getProjectsReq(user.id, page, PAGINATION_LIMIT)
+				.then(({ error, data }) => {
+					if (error) {
+						setServerError(`Ошибка загрузки проектов: ${error}`);
+						setProjects([]);
+						return;
+					}
+					const projectsData = data?.projects || [];
+					setServerError(null);
+					setProjects(projectsData);
+					dispatch(getProjects(projectsData));
+				})
+				.catch((err) => {
+					setServerError(`Неизвестная ошибка: ${err.message}`);
+					setProjects([]);
+				});
+		} else {
+			setProjects([]);
+			setServerError('Пользователь не авторизован');
 		}
 	}, [user, dispatch]);
 
 	useEffect(() => {
-		if (!currentProjectId && !!projects?.length) {
-			dispatch(setProjectTimer(projects[0].id));
+		if (!currentProjectId && projects.length > 0) {
+			dispatch(setProjectTimer(projects[0].id || projects[0]._id));
 		}
 	}, [projects, currentProjectId, dispatch]);
 
 	const saveTimer = (currentProjectId, comment, totalSeconds, userId) => {
-		setTimerData(currentProjectId, comment, totalSeconds, userId).then(() => {
-			setComment('');
-			dispatch(resetTimer());
-		});
+		if (!currentProjectId) {
+			setServerError('Выберите проект перед сохранением');
+			return;
+		}
+		setTimerData(currentProjectId, comment, totalSeconds, userId)
+			.then(() => {
+				setComment('');
+				dispatch(resetTimer());
+			})
+			.catch((err) => {
+				setServerError(`Ошибка сохранения таймера: ${err.message}`);
+			});
 	};
 
 	return (
 		<div className={className}>
 			<Card>
+				{serverError && <p className="error-message">{serverError}</p>}
 				<div className="timer-section">
 					<TimerDisplay />
 					<Icon size="30px" id="fa-pause" margin="0 0 0 10px" disabled={!isRunning} onClick={handleStop} />
-					<Icon size="30px" id="fa-play" margin="0 20px 0 10px" disabled={isRunning} onClick={handleStart} />
+					<Icon
+						size="30px"
+						id="fa-play"
+						margin="0 20px 0 10px"
+						disabled={isRunning || projects.length === 0}
+						onClick={handleStart}
+					/>
 				</div>
-				<select
-					disabled={isPaused || isRunning}
-					className="timer-select"
-					value={currentProjectId || ''}
-					onChange={(e) => {
-						dispatch(setProjectTimer(e.target.value));
-					}}
-				>
-					{projects.map(({ id: projectId, name: projectName }) => (
-						<option key={projectId} value={projectId}>
-							{projectName}
-						</option>
-					))}
-				</select>
+				{projects.length === 0 ? (
+					<p className="no-projects-message">Создайте проект, чтобы запустить таймер</p>
+				) : (
+					<select
+						disabled={isPaused || isRunning}
+						className="timer-select"
+						value={currentProjectId || ''}
+						onChange={(e) => {
+							console.log('MainPage: Выбор проекта:', e.target.value);
+							dispatch(setProjectTimer(e.target.value));
+						}}
+					>
+						{projects.map(({ id, _id, name }) => (
+							<option key={id || _id} value={id || _id}>
+								{name || 'Без названия'}
+							</option>
+						))}
+					</select>
+				)}
 				<textarea
 					className="main-textarea"
 					value={comment}
@@ -87,7 +123,7 @@ const MainContainer = ({ className }) => {
 					<Button
 						disabled={!isPaused}
 						width="250px"
-						onClick={() => saveTimer(currentProjectId, comment, totalSeconds, user.id)}
+						onClick={() => saveTimer(currentProjectId, comment, totalSeconds, user?.id)}
 					>
 						Сохранить
 					</Button>
@@ -96,7 +132,6 @@ const MainContainer = ({ className }) => {
 		</div>
 	);
 };
-
 export const Main = styled(MainContainer)`
 	display: flex;
 	flex-direction: column;
