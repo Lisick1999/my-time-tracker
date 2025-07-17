@@ -1,5 +1,5 @@
 export function request(path, method, data) {
-	return fetch('http://localhost:3001/api' + path, {
+	return fetch(process.env.REACT_API_URL + path, {
 		headers: {
 			'Content-type': 'application/json',
 		},

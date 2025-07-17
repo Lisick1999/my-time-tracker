@@ -1,7 +1,7 @@
 import { getCurrentDate } from './get-current-date';
 
 export const setProjectData = (userId, projectId, name, description, tag) =>
-	fetch(`http://localhost:3001/api/projects/${projectId}`, {
+	fetch(process.env.REACT_API_URL + `/projects/${projectId}`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',

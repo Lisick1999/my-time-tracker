@@ -1,4 +1,4 @@
 export const deleteProject = (projectId) =>
-	fetch(`http://localhost:3001/api/projects/${projectId}`, {
+	fetch(process.env.REACT_API_URL + `/projects/${projectId}`, {
 		method: 'DELETE',
 	});

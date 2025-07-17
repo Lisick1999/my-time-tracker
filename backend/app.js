@@ -10,6 +10,7 @@ const port = 3001;
 const app = express();
 
 const allowedOrigins = ['http://localhost:3000', 'http://217.11.167.19'];
+
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -20,6 +21,7 @@ app.use(cors({
   },
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
 
 app.use(express.static("../frontend/build"));
@@ -33,7 +35,7 @@ app.use((req, res) => {
 });
 
 mongoose.connect(process.env.DB_CONNECTION_STRING).then(() => {
-  app.listen(port, () => {
+  app.listen(port, '0.0.0.0', () => {
     console.log(`Сервер запущен на порту ${port}`);
   });
-});
+}).catch(err => console.error('Ошибка:', err.message));
