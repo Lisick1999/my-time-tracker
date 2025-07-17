@@ -23,6 +23,7 @@ const Content = styled.div`
 	margin: 0 auto;
 	padding: 20px;
 	box-sizing: border-box;
+	align-items: center;
 `;
 const TimerContainer = styled.div`
 	position: absolute;

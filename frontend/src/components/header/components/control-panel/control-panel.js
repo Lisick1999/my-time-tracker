@@ -73,6 +73,7 @@ export const ControlPanel = styled(ControlPanelContainer)`
 	padding: 20px 0 20px 20px;
 	font-size: 25px;
 	margin-top: 30px;
+	width: 100%;
 
 	& > *:not(:nth-last-child(-n + 3)) {
 		margin-right: auto;
