@@ -1,5 +1,5 @@
 export function request(path, method, data) {
-	return fetch(process.env.REACT_API_URL + path, {
+	return fetch(process.env.REACT_APP_API_URL + path, {
 		headers: {
 			'Content-type': 'application/json',
 		},

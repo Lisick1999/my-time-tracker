@@ -1,7 +1,7 @@
 import { getCurrentDate } from './get-current-date';
 
 export const addUser = (email, password, userName) =>
-	fetch(process.env.REACT_API_URL + '/users', {
+	fetch(process.env.REACT_APP_API_URL + '/users', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json;charset=utf-8',
