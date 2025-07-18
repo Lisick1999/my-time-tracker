@@ -29,9 +29,7 @@ const CreateEditProjectContainer = ({ className }) => {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const projects = useSelector((state) => state.projects);
 	const user = useSelector((state) => state.auth.user);
-	const existingProject = projects?.find((p) => p.id === id);
 
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
@@ -39,12 +37,26 @@ const CreateEditProjectContainer = ({ className }) => {
 	const [serverError, setServerError] = useState(null);
 
 	useEffect(() => {
-		if (existingProject) {
-			setName(existingProject.name);
-			setDescription(existingProject.description);
-			setTag(existingProject.tag);
+		if (id && user.id) {
+			getProjectsReq(user.id)
+				.then(({ error, data }) => {
+					if (error) {
+						return;
+					}
+
+					const existingProject = data?.projects?.find((p) => p.id === id);
+
+					if (existingProject) {
+						setName(existingProject.name);
+						setDescription(existingProject.description);
+						setTag(existingProject.tag);
+					}
+				})
+				.catch((err) => {
+					setServerError(`Неизвестная ошибка: ${err.message}`);
+				});
 		}
-	}, [existingProject]);
+	}, [id]);
 
 	const handleSave = (userId, name, description, tag) => {
 		if (!userId || !name) {
